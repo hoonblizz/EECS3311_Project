@@ -1,0 +1,22 @@
+-- user test 1
+debug_test(easy)
+bomb([B,4],[C,4])
+undo
+redo
+undo
+fire([C,4])
+undo
+redo
+bomb([B,3],[B,4])
+undo
+redo
+fire([C,3])
+undo
+redo
+give_up
+debug_test(easy)
+undo
+redo
+give_up
+undo
+redo

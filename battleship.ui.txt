@@ -1,0 +1,61 @@
+system battleship
+-- description ToDo
+
+--  Types - Version1
+
+type COLUMN = 1..12 
+	-- x-coordinate of the board
+type ROW = {A, B, C, D, E, F, G, H, I, J, K, L}   
+	-- y-coordinate of the board
+type COORDINATE = TUPLE[row: ROW; column: COLUMN]
+
+type LEVEL = {easy, medium, hard, advanced} 
+	-- easy is 4x4 and gets 8 shots and 2 bombs for 2 ships
+	-- medium is 6x6 and gets 16 shots and 3 bombs for 3 ships
+	-- hard is 8x8 and gets 24 shots and 5 bombs for 5 ships
+	-- advanced is 12x12 gets 40 shots and 7 bombs for 7 ships
+
+--  Types - Version2
+
+type GRID_SIZE = 4..12			
+	-- grid dimension for the `custom_setup' command
+type NUMBER_OF_SHIPS = 1..7			
+	-- total number of ships (n) for the `custom_setup' command
+	-- (GRID_SIZE // 3) <= n <= (GRID_SIZE // 2) + 1, for any grid
+	-- generate n ships of size 1..n
+type MAX_SHOTS = 1..144 				
+	-- max number of shots (n) for the `custom_setup' command
+	-- SUM(1..GRID_SIZE) <= n <= (GRID_SIZE)^2
+type NUMBER_OF_BOMBS = 1..7
+	-- max number of bombs (n) for the `custom_setup' command
+	-- (GRID_SIZE // 3) <= n <= (GRID_SIZE // 2) + 1, for any grid
+
+-- User Actions - Version1
+new_game (level: LEVEL)
+	-- game based on random placement of ships
+	-- winner sinks all ships
+	-- loser when we run out of shots and bombs
+
+debug_test (level: LEVEL)
+	-- for deterministic testing, see documentation
+
+fire (coordinate: COORDINATE)
+bomb (coordinate1: COORDINATE; coordinate2: COORDINATE)
+	-- coordinates must be adjacent
+	-- bombs do not count as shots
+	
+-- User Actions - Version2
+undo
+redo
+custom_setup (dimension: GRID_SIZE; 
+	ships: NUMBER_OF_SHIPS; 
+	max_shots: MAX_SHOTS;
+	num_bombs: NUMBER_OF_BOMBS)
+custom_setup_test (dimension: GRID_SIZE; 
+	ships: NUMBER_OF_SHIPS; 
+	max_shots: MAX_SHOTS;
+	num_bombs: NUMBER_OF_BOMBS)
+give_up 
+	-- Ends game, restores score to end of previous game, 
+	-- does not increment game
+

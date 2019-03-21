@@ -1,0 +1,4 @@
+new_game(medium)
+
+man
+debug_test(medium)

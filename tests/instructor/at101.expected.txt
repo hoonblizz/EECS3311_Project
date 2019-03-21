@@ -1,0 +1,295 @@
+  state 0 OK -> Start a new game
+->debug_test(easy)
+  state 1 OK -> Fire Away!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  v
+  C  _  _  h  v
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 0/3)
+  Ships: 0/2
+    2x1: [B, 4]->v;[C, 4]->v
+    1x1: [C, 3]->h
+->bomb([B, 4],[C, 4])
+  state 2 OK -> 2x1 ship sunk! Keep Firing!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  X
+  C  _  _  h  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 0/8
+  Bombs: 1/2
+  Score: 2/3 (Total: 2/3)
+  Ships: 1/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->h
+->undo
+  state 3 (= state 1) OK -> Fire Away!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  v
+  C  _  _  h  v
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 0/3)
+  Ships: 0/2
+    2x1: [B, 4]->v;[C, 4]->v
+    1x1: [C, 3]->h
+->redo
+  state 4 (= state 2) OK -> 2x1 ship sunk! Keep Firing!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  X
+  C  _  _  h  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 0/8
+  Bombs: 1/2
+  Score: 2/3 (Total: 2/3)
+  Ships: 1/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->h
+->undo
+  state 5 (= state 1) OK -> Fire Away!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  v
+  C  _  _  h  v
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 0/3)
+  Ships: 0/2
+    2x1: [B, 4]->v;[C, 4]->v
+    1x1: [C, 3]->h
+->fire([C, 4])
+  state 6 OK -> Hit! Keep Firing!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  v
+  C  _  _  h  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 1/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 0/3)
+  Ships: 0/2
+    2x1: [B, 4]->v;[C, 4]->X
+    1x1: [C, 3]->h
+->undo
+  state 7 (= state 1) OK -> Fire Away!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  v
+  C  _  _  h  v
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 0/3)
+  Ships: 0/2
+    2x1: [B, 4]->v;[C, 4]->v
+    1x1: [C, 3]->h
+->redo
+  state 8 (= state 6) OK -> Hit! Keep Firing!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  v
+  C  _  _  h  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 1/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 0/3)
+  Ships: 0/2
+    2x1: [B, 4]->v;[C, 4]->X
+    1x1: [C, 3]->h
+->bomb([B, 3],[B, 4])
+  state 9 OK -> 2x1 ship sunk! Keep Firing!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  O  X
+  C  _  _  h  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 1/8
+  Bombs: 1/2
+  Score: 2/3 (Total: 2/3)
+  Ships: 1/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->h
+->undo
+  state 10 (= state 6) OK -> Hit! Keep Firing!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  v
+  C  _  _  h  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 1/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 0/3)
+  Ships: 0/2
+    2x1: [B, 4]->v;[C, 4]->X
+    1x1: [C, 3]->h
+->redo
+  state 11 (= state 9) OK -> 2x1 ship sunk! Keep Firing!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  O  X
+  C  _  _  h  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 1/8
+  Bombs: 1/2
+  Score: 2/3 (Total: 2/3)
+  Ships: 1/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->h
+->fire([C, 3])
+  state 12 OK -> 1x1 ship sunk! You Win!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  O  X
+  C  _  _  X  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 2/8
+  Bombs: 1/2
+  Score: 3/3 (Total: 3/3)
+  Ships: 2/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->X
+->undo
+  state 13 Nothing to undo -> Start a new game
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  O  X
+  C  _  _  X  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 2/8
+  Bombs: 1/2
+  Score: 3/3 (Total: 3/3)
+  Ships: 2/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->X
+->redo
+  state 14 Nothing to redo -> Start a new game
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  O  X
+  C  _  _  X  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 2/8
+  Bombs: 1/2
+  Score: 3/3 (Total: 3/3)
+  Ships: 2/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->X
+->give_up
+  state 15 Game not started -> Start a new game
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  O  X
+  C  _  _  X  X
+  D  _  _  _  _
+  Current Game (debug): 1
+  Shots: 2/8
+  Bombs: 1/2
+  Score: 3/3 (Total: 3/3)
+  Ships: 2/2
+    2x1: [B, 4]->X;[C, 4]->X
+    1x1: [C, 3]->X
+->debug_test(easy)
+  state 16 OK -> Fire Away!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
+  Current Game (debug): 2
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 3/6)
+  Ships: 0/2
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
+->undo
+  state 17 Nothing to undo -> Fire Away!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
+  Current Game (debug): 2
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 3/6)
+  Ships: 0/2
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
+->redo
+  state 18 Nothing to redo -> Fire Away!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
+  Current Game (debug): 2
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 3/6)
+  Ships: 0/2
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
+->give_up
+  state 19 OK -> You gave up!
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
+  Current Game (debug): 2
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 3/6)
+  Ships: 0/2
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
+->undo
+  state 20 Nothing to undo -> Start a new game
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
+  Current Game (debug): 2
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 3/6)
+  Ships: 0/2
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
+->redo
+  state 21 Nothing to redo -> Start a new game
+     1  2  3  4
+  A  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
+  Current Game (debug): 2
+  Shots: 0/8
+  Bombs: 0/2
+  Score: 0/3 (Total: 3/6)
+  Ships: 0/2
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
