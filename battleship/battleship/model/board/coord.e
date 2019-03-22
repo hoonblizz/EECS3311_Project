@@ -16,7 +16,7 @@ create
 	make
 
 feature{NONE}
-	make(a_x,a_y: INTEGER)
+	make(a_x, a_y: INTEGER)
 			-- may not be a valid square
 		do
 			x := a_x
@@ -42,7 +42,7 @@ feature
 		local
 			l_size: INTEGER
 		do
-			l_size := board.size
+			l_size := board.gamedata.current_board_size
 			Result :=
 			(1 <= a_x and a_x <= l_size) and (1 <= a_y and  a_y <= l_size)
 		end

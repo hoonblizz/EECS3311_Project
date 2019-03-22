@@ -1,4 +1,1 @@
-new_game(medium)
-
-man
-debug_test(medium)
+new_game(easy)

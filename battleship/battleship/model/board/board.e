@@ -17,10 +17,15 @@ create
 
 feature {NONE} -- create
 
-	make(a_size: INTEGER)
+	-- level will be 13, 14, 15, 16 (easy, medium, hard, advanced)
+	make(level: INTEGER)
+		local
+			size: INTEGER
 		do
-			size := a_size
 
+			create gamedata.make(level)
+
+			size := gamedata.get_board_size (level)
 
 			create implementation.make_filled ('_',size, size)
 			--create king_position.make (1, 1)
@@ -32,18 +37,17 @@ feature {NONE} -- create
 			create bomb_coord1.make (1, 1)
 			create bomb_coord2.make (1, 1)
 
-
 			create history.make
 		end
 
 
-feature {MOVE} -- implementation
+feature {OPERATION} -- implementation
 	implementation: ARRAY2[CHARACTER]
 
 
 feature  -- game started
-	size: INTEGER
-		-- size of board
+	--size: INTEGER
+		-- size of board. replacing with gamedata -> current_board_size
 
     started: BOOLEAN
     	-- has the game started?
@@ -61,11 +65,17 @@ feature -- coords
 feature -- history
  	history: HISTORY
 
+feature -- game data
+	gamedata: GAMEDATA
+
 feature -- out
 
     board_out: STRING
 			-- representation of board
+		local
+			size: INTEGER
 		do
+			size := gamedata.current_board_size
 			Result := "  "
 			across 1 |..| size as h loop
 				across 1 |..| size as w loop

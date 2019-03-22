@@ -22,16 +22,20 @@ feature {NONE} -- Initialization
 		do
 			make_board (4)
 			i := 0
+			current_game := 0
+			current_total_score := 0
+			current_total_score_limit := 0
 			message := "ETF_MODEL default message"
 		end
 
 feature -- board
 
-    make_board(a_size:INTEGER)
+    make_board(level: INTEGER)
+    	-- 13, 14, 15, 16 (easy, medium, hard, advanced)
     	require
-    		5 <= a_size and a_size <= 8
+    		13 >= level and level <= 16
     	do
-    		create board.make (a_size)
+    		create board.make(level)
     	end
 
 feature -- message
@@ -46,11 +50,29 @@ feature -- model attributes
 	board: BOARD
 	i : INTEGER
 
+	-- These values don't change when new game started.
+	current_game: INTEGER -- number of game currently running
+	current_total_score, current_total_score_limit: INTEGER
+
+
 feature -- model operations
 	default_update
 			-- Perform update to the model state.
 		do
 			i := i + 1
+		end
+
+	update_current_game
+		do
+			current_game := current_game + 1
+		end
+
+	update_current_total_score_limit(level: INTEGER)
+		local
+			gamedata: GAMEDATA
+		do
+			create gamedata.make (level)
+			current_total_score_limit := current_total_score_limit + gamedata.get_score_limit(level)
 		end
 
 	reset
