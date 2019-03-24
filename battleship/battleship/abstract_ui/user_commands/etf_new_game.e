@@ -12,26 +12,31 @@ inherit
 create
 	make
 feature -- command
-	new_game(level: INTEGER_64)
+	new_game(level_str: INTEGER_64)
 		require else
-			new_game_precond(level)
+			new_game_precond(level_str)
 		local
-			level32: INTEGER
+			level_int: INTEGER
 			coord: COORD
+			gamedata: GAMEDATA
     	do
+    		--create gamedata
 			-- perform some update on the model state
 			-- setup board
+
 			if not model.board.started then
-				level32 := level.as_integer_32
-				model.make_board (level32)
+				level_int := level_str.as_integer_32
+				model.make_board (level_int, False)
 				model.board.set_started
 				model.update_current_game
-				model.update_current_total_score_limit(level32)
+				model.update_current_total_score_limit(level_int)
 
-				create coord.make (level32, level32)
-				model.set_message ("ok")
+				create coord.make (level_int, level_int)
+				model.set_msg_error (model.board.gamedata.err_ok)
+				model.set_msg_command (model.board.gamedata.msg_fire_away)
 			else
-				model.set_message("game already started")
+				model.set_msg_error(model.board.gamedata.err_game_already_started)
+				model.set_msg_command (model.board.gamedata.msg_fire_away)
 			end
 			--gamedata.make
 			model.default_update

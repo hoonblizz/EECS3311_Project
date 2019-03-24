@@ -1,1 +1,2 @@
-new_game(easy)
+
+debug_test(hard)

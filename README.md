@@ -4,7 +4,7 @@
 
 
 
-##Trouble Shooting
+## Trouble Shooting
 ### gtk/gtk.h file not found
 When this happen, nothing would work but gives a full of error.<br>
 Keep calm. Just save all your work and make a copy of it first.<br>
@@ -12,7 +12,7 @@ For me, this happened when I changed bash_profile a bit. (I think)<br>
 Easiest solution might be update EVERYTHING to get the original setups.<br>
 For my case, I just followed professor's instruction once again.
 
-Assume Xcode, X11 and MacPort is already installed.
+Assume **Xcode, X11 and MacPort** is already installed.
 Then,
 ```
 sudo port selfupdate
