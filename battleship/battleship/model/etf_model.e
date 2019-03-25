@@ -185,7 +185,7 @@ feature -- queries
 
 							-- Check for Hit
 							create coord.make (tempRow, tempCol)
-							if board.check_ship_hit(coord) then
+							if board.check_coord_is_hit(coord) then
 								Result := Result + "X"
 							else
 								if ship.item.dir then

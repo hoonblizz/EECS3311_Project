@@ -50,12 +50,11 @@ feature {NONE} -- create
 				end
 			end
 
-			-- For fire and bomb, make like this.
+			-- init. Shouldn't be actually used for undo, redo
+			create coord_fire.make (0, 0)
+			create coord_bomb1.make (0, 0)
+			create coord_bomb2.make (0, 0)
 
-			--create king_position.make (1, 1)
-			--implementation.put ('K', 1, 1)
-			--create bishop_position.make (size, size)
-			--implementation.put ('B', size, size)
 
 			create history.make
 		end
@@ -83,10 +82,6 @@ feature  -- game started
     		debugMode := True
     	end
 
---feature -- coords
---	fire_coord: COORD
---	bomb_coord1: COORD
---	bomb_coord2: COORD
 
 feature -- history
  	history: HISTORY
@@ -94,20 +89,71 @@ feature -- history
 feature -- game data
 	gamedata: GAMEDATA
 
-feature -- marking
-	mark_fire(coord: COORD)
-		do
+feature -- variables for record coords
+	-- used in OPERATION_FIRE and OPERATION_BOMB for track of 'old position'
+	coord_fire: COORD
+	coord_bomb1: COORD
+	coord_bomb2: COORD
 
+feature -- marking on board
+	-- At this point, assume all error cases are handled. (in ETF)
+	mark_on_board(coord: COORD)
+		do
+			if check_coord_is_hit(coord) then
+				implementation.put ('X', coord.x.item, coord.y.item)
+			else
+				implementation.put ('O', coord.x.item, coord.y.item)
+			end
 		end
 
-	makr_bomb(coord1: COORD; coord2: COORD)
+	mark_fire(coord: COORD)
 		do
+			mark_on_board(coord)
+		end
 
+	mark_bomb(coord1: COORD; coord2: COORD)
+		do
+			mark_on_board(coord1)
+			mark_on_board(coord2)
+		end
+
+	mark_empty(coord: COORD)
+		do
+			implementation.put ('_', coord.x.item, coord.y.item)
 		end
 
 feature -- check
-	check_ship_hit(coord: COORD): BOOLEAN
+	-- Go through all ships any check any of them is hit
+	check_coord_is_hit(coord: COORD): BOOLEAN
+		local
+			tempRow, tempCol: INTEGER
+			tempCoord: COORD
+			foundMatch: BOOLEAN
 		do
+			foundMatch := False
+
+			across gamedata.generated_ships as ship loop
+				tempRow := ship.item.row
+				tempCol := ship.item.col
+
+				across 1 |..| ship.item.size as j loop
+					-- Check if any coord of ship is matching
+					create tempCoord.make (tempRow, tempCol)
+					if tempCoord ~ coord then
+						foundMatch := True
+					end
+					if ship.item.dir then
+						tempRow := tempRow + 1
+					else
+						tempCol := tempCol + 1
+					end
+				end
+			end
+		end
+
+	check_ship_already_hit(coord: COORD): BOOLEAN
+		do
+			-- this is for 'already fired coord'
 			if implementation[coord.x, coord.y] ~ '_' then
 				Result := False
 			else
@@ -120,24 +166,36 @@ feature -- check
 		local
 			numOfHit: INTEGER
 			coord: COORD
+			coord_x, coord_y: INTEGER
 		do
 			numOfHit := 0
+			coord_x := ship.row.item
+			coord_y := ship.col.item
+
 			across 1 |..| ship.size as i loop
 
 				print("%NImple Coord check: [" + ship.row.out + ", " + ship.col.out + "] " + implementation[ship.row.item, ship.col.item].out)
 
-				create coord.make (ship.row.item, ship.col.item)
+				-- based on dir, add to coor
+				if ship.dir.item then	coord_x := coord_x + 1
+				else coord_y := coord_y + 1
+				end
 
-				if check_ship_hit(coord) then -- hit
+				create coord.make (coord_x, coord_y)
+
+				if check_ship_already_hit(coord) then -- hit
 					numOfHit := numOfHit + 1
 				end
 			end
+
+			print("%NCheck for Full Hit: " + numOfHit.out + " / " + ship.size.out)
 
 			if ship.size ~ numOfHit then		-- Full hit
 				Result := True
 			else
 				Result := False
 			end
+
 		end
 
 
