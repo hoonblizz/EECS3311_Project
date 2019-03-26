@@ -11,12 +11,15 @@ inherit
 		redefine fire end
 create
 	make
-feature -- command
+
+feature -- query
 
 	check_no_shots: BOOLEAN
 		do
 			Result := (model.board.gamedata.current_fire >= model.board.gamedata.current_fire_limit)
 		end
+
+feature -- command
 
 	fire(coordinate: TUPLE[row: INTEGER_64; column: INTEGER_64])
 		require else
@@ -52,20 +55,23 @@ feature -- command
 				model.board.history.extend_history (op)
 				op.execute
 
+				model.set_msg_error(model.board.gamedata.err_ok)
+
 				-- Message is based on whether it's hit or not.
 				-- Check if it was a hit
 				if model.board.check_if_it_was_hit(coord) then
 					if model.board.check_hit_caused_sink(coord) then
 						-- Ship is sunk. Need Size of ship to display
 						shipSize := model.board.check_coord_is_hit (coord)
-						model.set_msg_error(model.board.gamedata.msg_ship_sunk(shipSize))
+						model.set_msg_command(model.board.gamedata.msg_ship_sunk(shipSize))
 						model.set_msg_command (model.board.gamedata.msg_keep_fire)
 					else
-						model.set_msg_error(model.board.gamedata.msg_hit)
+						model.set_msg_command(model.board.gamedata.msg_hit)
 						model.set_msg_command (model.board.gamedata.msg_keep_fire)
 					end
 				else
-
+					model.set_msg_command(model.board.gamedata.msg_miss)
+					model.set_msg_command (model.board.gamedata.msg_keep_fire)
 				end
 
 			end

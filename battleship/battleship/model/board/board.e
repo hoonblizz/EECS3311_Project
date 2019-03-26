@@ -91,6 +91,7 @@ feature -- game data
 	gamedata: GAMEDATA
 
 feature -- variables for record coords
+
 	-- used in OPERATION_FIRE and OPERATION_BOMB for track of 'old position'
 	coord_fire: COORD
 	coord_bomb1: COORD
@@ -154,11 +155,14 @@ feature -- check
 					end
 				end
 			end
+
+			Result := matchedShipSize
 		end
 
 	check_ship_already_hit(coord: COORD): BOOLEAN
 		do
 			-- this is for 'already fired coord'
+			print("%NCheck coords: " + coord.x.out + ", " + coord.y.out)
 			if implementation[coord.x, coord.y] ~ 'X' or implementation[coord.x, coord.y] ~ 'O' then
 				Result := True
 			else
@@ -181,16 +185,17 @@ feature -- check
 
 				print("%NImple Coord check: [" + ship.row.out + ", " + ship.col.out + "] " + implementation[ship.row.item, ship.col.item].out)
 
-				-- based on dir, add to coor
-				if ship.dir.item then	coord_x := coord_x + 1
-				else coord_y := coord_y + 1
-				end
-
 				create coord.make (coord_x, coord_y)
 
 				if check_ship_already_hit(coord) then -- hit
 					numOfHit := numOfHit + 1
 				end
+
+				-- based on dir, add to coor
+				if ship.dir.item then	coord_x := coord_x + 1
+				else coord_y := coord_y + 1
+				end
+				
 			end
 
 			print("%NCheck for Full Hit: " + numOfHit.out + " / " + ship.size.out)
@@ -248,7 +253,11 @@ feature -- check errors in commands
 			end
 		end
 
-
+feature -- display
+	display_value_on_board(coord: COORD): CHARACTER
+		do
+			Result := implementation[coord.x, coord.y]
+		end
 
 
 feature -- out

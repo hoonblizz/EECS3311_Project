@@ -40,7 +40,7 @@ feature -- board
     	do
     		create board.make(level, debug_mode)
     	end
-    	
+
     board: BOARD
 
 feature -- message
@@ -179,6 +179,7 @@ feature -- queries
 						-- Loop for size of ship and check for hit
 						tempRow := ship.item.row
 						tempCol := ship.item.col
+						
 						across 1 |..| ship.item.size as j loop
 
 							Result := Result + "[" + board.gamedata.row_chars[tempRow] + ", " + tempCol.out + "]"
@@ -186,15 +187,7 @@ feature -- queries
 
 							-- Check for Hit
 							create coord.make (tempRow, tempCol)
-							if board.check_coord_is_hit(coord) > 0 then
-								Result := Result + "X"
-							else
-								if ship.item.dir then
-									Result := Result + "v"
-								else
-									Result := Result + "h"
-								end
-							end
+							Result := Result + board.display_value_on_board(coord).out
 
 							-- Check if last one
 							if j.item < ship.item.size then

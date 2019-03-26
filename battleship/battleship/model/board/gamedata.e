@@ -101,7 +101,7 @@ feature --attributes
 			Result := shipSize1.out + "x1 and " + shipSize2.out +"x1 ships sunk!"
 		end
 
-	err_ok: STRING = "ok"
+	err_ok: STRING = "OK"
 	-- For new game, debug game
 	err_game_already_started: STRING = "Game already started"
 	-- For Fire and bomb
