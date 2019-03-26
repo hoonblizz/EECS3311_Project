@@ -39,7 +39,7 @@ feature --attributes
 
 	-- 13, 14, 15, 16 (easy, medium, hard, advanced)
 	-- current_ships:   currently "taken down" ships.
-	-- current_game: INTEGER		-- number of games running -> moved to ETF_MODEL
+	current_game: INTEGER
 
 	-- variables that must be set or reset
 	current_level_int: INTEGER
@@ -114,7 +114,58 @@ feature --attributes
 	err_no_bomb: STRING ="No bombs remaining"
 	err_adjacent_coord: STRING = "Bomb coordinates must be adjacent"
 
+feature -- update values
 
+	-- these updates are from 'MODEL' value to 'BOARD.GAMEDATA'
+	--		see ETF_NEW_GAME.
+	update_current_game(val: INTEGER)
+		do
+			current_game := val
+		end
+	update_current_total_score(val: INTEGER)
+		do
+			current_total_score := val
+		end
+	update_current_total_score_limit(val: INTEGER)
+		do
+			current_total_score_limit := val
+		end
+
+	add_score
+		do
+			current_score := current_score + 1
+			current_total_score := current_total_score + 1
+		end
+	add_shot
+		do
+			current_fire := current_fire + 1
+		end
+	add_bomb
+		do
+			current_bomb := current_bomb + 1
+		end
+	add_ship
+		do
+			current_ships := current_ships + 1
+		end
+
+	sub_score
+		do
+			current_score := current_score - 1
+			current_total_score := current_total_score - 1
+		end
+	sub_shot
+		do
+			current_fire := current_fire - 1
+		end
+	sub_bomb
+		do
+			current_bomb := current_bomb - 1
+		end
+	sub_ship
+		do
+			current_ships := current_ships - 1
+		end
 
 feature --query
 	get_level_int(level_str: INTEGER_64): INTEGER

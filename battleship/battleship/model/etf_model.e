@@ -113,17 +113,21 @@ feature -- model operations
 			numberOfCommand := numberOfCommand + 1
 		end
 
+	-- these updates are from 'BOARD.GAMEDATA' to 'MODEL'
+	--		See BOARD for comparison
 	update_current_game
 		do
-			current_game := current_game + 1
+			current_game := board.gamedata.current_game + 1
 		end
 
-	update_current_total_score_limit(level: INTEGER)
-		local
-			gamedata: GAMEDATA
+	update_current_total_score
 		do
-			create gamedata.make (level, board.debugmode)
-			current_total_score_limit := current_total_score_limit + gamedata.get_score_limit(level)
+			current_total_score := board.gamedata.current_total_score
+		end
+
+	update_current_total_score_limit
+		do
+			current_total_score_limit := current_total_score_limit + board.gamedata.current_score_limit
 		end
 
 	reset
@@ -141,6 +145,9 @@ feature -- queries
 			coord: COORD
 			tempRow,tempCol: INTEGER
 		do
+
+			update_current_total_score	-- just update total_score.
+
 			Result := ""
 			if board.started then
 				Result := "%N  "
@@ -179,7 +186,7 @@ feature -- queries
 						-- Loop for size of ship and check for hit
 						tempRow := ship.item.row
 						tempCol := ship.item.col
-						
+
 						across 1 |..| ship.item.size as j loop
 
 							Result := Result + "[" + board.gamedata.row_chars[tempRow] + ", " + tempCol.out + "]"
@@ -220,7 +227,11 @@ feature -- queries
 	out : STRING
 		do
 			create Result.make_from_string ("  " + get_msg_numOfCmd + " " + get_msg_error + " -> " + get_msg_command + "%N")
-			clear_msg_command	 -- clear after usage
+
+			-- clear command message when error is OK.
+			--if get_msg_error ~ board.gamedata.err_ok then
+				clear_msg_command
+			--end
 
 			Result.append (board.out)
 			Result := Result + score_out

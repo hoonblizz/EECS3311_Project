@@ -78,6 +78,7 @@ feature  -- game started
     	do
         	started := True
     	end
+
     set_debugMode
     	do
     		debugMode := True
@@ -195,7 +196,7 @@ feature -- check
 				if ship.dir.item then	coord_x := coord_x + 1
 				else coord_y := coord_y + 1
 				end
-				
+
 			end
 
 			print("%NCheck for Full Hit: " + numOfHit.out + " / " + ship.size.out)
@@ -253,11 +254,17 @@ feature -- check errors in commands
 			end
 		end
 
+	check_fire_happened: BOOLEAN
+		do
+			Result := (gamedata.current_fire > 0 or gamedata.current_bomb > 0)
+		end
+
 feature -- display
 	display_value_on_board(coord: COORD): CHARACTER
 		do
 			Result := implementation[coord.x, coord.y]
 		end
+
 
 
 feature -- out

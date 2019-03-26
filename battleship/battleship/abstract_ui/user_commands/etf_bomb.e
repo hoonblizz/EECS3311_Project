@@ -83,11 +83,13 @@ feature -- command
 
 				-- Message is based on whether it's hit or not.
 				-- Check if it was a hit
+				model.board.gamedata.add_bomb  -- add for bomb
 				shipSize1 := 0
 				shipSize2 := 0
 				if model.board.check_if_it_was_hit(coord1) or model.board.check_if_it_was_hit(coord2) then
 
 					if model.board.check_if_it_was_hit(coord1) then
+						model.board.gamedata.add_score	-- add for hit score
 						if model.board.check_hit_caused_sink(coord1) then
 							-- Ship is sunk. Need Size of ship to display
 							shipSize1 := model.board.check_coord_is_hit (coord1)
@@ -95,18 +97,23 @@ feature -- command
 					end
 
 					if model.board.check_if_it_was_hit(coord2) then
+						model.board.gamedata.add_score	-- add for hit score
 						if model.board.check_hit_caused_sink(coord2) then
 							shipSize2 := model.board.check_coord_is_hit (coord2)
 						end
 					end
 
 					if shipSize1 > 0 and shipSize2 > 0 then -- both shot caused sink
+						model.board.gamedata.add_ship -- add for ship sunk
+						model.board.gamedata.add_ship -- add for ship sunk
 						model.set_msg_command(model.board.gamedata.msg_ships_sunk(shipSize1, shipSize2))
 						model.set_msg_command (model.board.gamedata.msg_keep_fire)
 					elseif shipSize1 > 0 then
+						model.board.gamedata.add_ship -- add for ship sunk
 						model.set_msg_command(model.board.gamedata.msg_ship_sunk(shipSize1))
 						model.set_msg_command (model.board.gamedata.msg_keep_fire)
 					elseif shipSize2 > 0 then
+						model.board.gamedata.add_ship -- add for ship sunk
 						model.set_msg_command(model.board.gamedata.msg_ship_sunk(shipSize2))
 						model.set_msg_command (model.board.gamedata.msg_keep_fire)
 					else
