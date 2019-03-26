@@ -90,8 +90,16 @@ feature --attributes
 	msg_miss: STRING = "Miss!"
 	msg_win: STRING = "You Win!"
 	msg_game_over: STRING = "Game Over"
-	msg_ship_sunk: STRING = "ship sunk!"
-	msg_ships_sunk: STRING = "ships sunk!"
+
+	msg_ship_sunk(shipSize: INTEGER): STRING
+		do
+			Result := shipSize.out + "x1 ship sunk!"
+		end
+
+	msg_ships_sunk(shipSize1: INTEGER; shipSize2: INTEGER): STRING
+		do
+			Result := shipSize1.out + "x1 and " + shipSize2.out +"x1 ships sunk!"
+		end
 
 	err_ok: STRING = "ok"
 	-- For new game, debug game

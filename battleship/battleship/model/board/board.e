@@ -51,9 +51,10 @@ feature {NONE} -- create
 			end
 
 			-- init. Shouldn't be actually used for undo, redo
-			create coord_fire.make (0, 0)
-			create coord_bomb1.make (0, 0)
-			create coord_bomb2.make (0, 0)
+			create coord_fire.make (1, 1)
+			create coord_bomb1.make (1, 1)
+			create coord_bomb2.make (1, 1)
+
 
 
 			create history.make
@@ -99,7 +100,7 @@ feature -- marking on board
 	-- At this point, assume all error cases are handled. (in ETF)
 	mark_on_board(coord: COORD)
 		do
-			if check_coord_is_hit(coord) then
+			if check_coord_is_hit(coord) > 0 then
 				implementation.put ('X', coord.x.item, coord.y.item)
 			else
 				implementation.put ('O', coord.x.item, coord.y.item)
@@ -123,14 +124,18 @@ feature -- marking on board
 		end
 
 feature -- check
+
 	-- Go through all ships any check any of them is hit
-	check_coord_is_hit(coord: COORD): BOOLEAN
+	-- if sunk, return 'ship size'  <--- important!!
+	-- if just hit, return 0.
+	-- Because just hit and sink have different messages (used in ETF_FIRE)
+	check_coord_is_hit(coord: COORD): INTEGER
 		local
 			tempRow, tempCol: INTEGER
 			tempCoord: COORD
-			foundMatch: BOOLEAN
+			matchedShipSize: INTEGER
 		do
-			foundMatch := False
+			matchedShipSize := 0
 
 			across gamedata.generated_ships as ship loop
 				tempRow := ship.item.row
@@ -140,7 +145,7 @@ feature -- check
 					-- Check if any coord of ship is matching
 					create tempCoord.make (tempRow, tempCol)
 					if tempCoord ~ coord then
-						foundMatch := True
+						matchedShipSize := ship.item.size
 					end
 					if ship.item.dir then
 						tempRow := tempRow + 1
@@ -154,10 +159,10 @@ feature -- check
 	check_ship_already_hit(coord: COORD): BOOLEAN
 		do
 			-- this is for 'already fired coord'
-			if implementation[coord.x, coord.y] ~ '_' then
-				Result := False
-			else
+			if implementation[coord.x, coord.y] ~ 'X' or implementation[coord.x, coord.y] ~ 'O' then
 				Result := True
+			else
+				Result := False
 			end
 		end
 
@@ -197,6 +202,53 @@ feature -- check
 			end
 
 		end
+
+	-- Used to decide messages after fire, bomb execution
+	-- mixture of 'check_coord_is_hit' and 'check_ship_sunk'
+	-- ASSUME coord was a hit.
+	check_hit_caused_sink(coord: COORD): BOOLEAN
+		local
+			shipSize: INTEGER
+			sunk: BOOLEAN
+		do
+			sunk := False
+			shipSize := check_coord_is_hit(coord)
+
+			across gamedata.generated_ships as ship loop
+				if ship.item.size ~ shipSize then
+					sunk := check_ship_sunk(ship.item)
+				end
+			end
+
+			Result := sunk
+		end
+
+feature -- check errors in commands
+	check_invalid_coord(coord: COORD): BOOLEAN
+		do
+			--print("%Ncheck_invalid_coord: " + coord.x.out + ", " + coord.y.out + " in " + gamedata.current_board_size.out)
+			Result := not (coord.x <= gamedata.current_board_size and coord.y <= gamedata.current_board_size)
+		end
+
+	check_already_fired(coord: COORD): BOOLEAN
+		do
+			-- See if coord is already 'marked'
+			Result := check_ship_already_hit(coord)
+		end
+
+	-- This is AFTER executing commad. Checking if it was a hit not miss.
+	check_if_it_was_hit(coord: COORD): BOOLEAN
+		do
+			if implementation[coord.x, coord.y] ~ 'X' then
+				Result := True
+			elseif implementation[coord.x, coord.y] ~ 'O' then
+				Result := False
+			else		-- Shouldn't be happening
+				Result := False
+			end
+		end
+
+
 
 
 feature -- out

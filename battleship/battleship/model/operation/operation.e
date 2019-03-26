@@ -17,20 +17,6 @@ feature{NONE}
 			Result := ma.m.board
 		end
 
-feature -- check errors
-
-	check_invalid_coord(coord: COORD): BOOLEAN
-		do
-
-		end
-
-	check_already_fired(coord: COORD): BOOLEAN
-		do
-
-		end
-
-
-
 feature -- deferred commands
 	execute
 		deferred

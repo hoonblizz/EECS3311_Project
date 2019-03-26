@@ -40,6 +40,8 @@ feature -- board
     	do
     		create board.make(level, debug_mode)
     	end
+    	
+    board: BOARD
 
 feature -- message
 	-- Message has a form of
@@ -97,7 +99,6 @@ feature -- message
 		end
 
 feature -- model attributes
-	board: BOARD
 	numberOfCommand : INTEGER
 
 	-- These values don't change when new game started.
@@ -185,7 +186,7 @@ feature -- queries
 
 							-- Check for Hit
 							create coord.make (tempRow, tempCol)
-							if board.check_coord_is_hit(coord) then
+							if board.check_coord_is_hit(coord) > 0 then
 								Result := Result + "X"
 							else
 								if ship.item.dir then

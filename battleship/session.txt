@@ -1,2 +1,3 @@
-
 debug_test(hard)
+debug_test(advanced)
+fire([G, 2])
