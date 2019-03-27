@@ -55,7 +55,7 @@ feature {NONE} -- create
 			create coord_bomb1.make (1, 1)
 			create coord_bomb2.make (1, 1)
 
-
+			create msg_command.make_empty
 
 			create history.make
 		end
@@ -98,6 +98,14 @@ feature -- variables for record coords
 	coord_bomb1: COORD
 	coord_bomb2: COORD
 
+	-- model can get message from here
+	--	So in ETF_FIRE, use 'set_msg_command_from_board' in MODEL to recieve messages
+	msg_command: ARRAY[STRING]
+	set_msg_command(msg: STRING)
+		do
+			msg_command.force(msg, msg_command.count + 1)
+		end
+
 feature -- marking on board
 	-- At this point, assume all error cases are handled. (in ETF)
 	mark_on_board(coord: COORD)
@@ -110,14 +118,93 @@ feature -- marking on board
 		end
 
 	mark_fire(coord: COORD)
+		local
+			shipSize: INTEGER
 		do
 			mark_on_board(coord)
+
+			-- Message is based on whether it's hit or not.
+			-- Check if it was a hit
+			gamedata.add_shot  -- add for shot
+
+			if check_if_it_was_hit(coord) then
+
+				gamedata.add_score	-- add for hit score
+
+				if check_hit_caused_sink(coord) then
+					-- Ship is sunk. Need Size of ship to display
+
+					gamedata.add_ship -- add for ship sunk
+
+					shipSize := check_coord_is_hit (coord)
+					set_msg_command(gamedata.msg_ship_sunk(shipSize))
+					set_msg_command (gamedata.msg_keep_fire)
+				else
+					set_msg_command(gamedata.msg_hit)
+					set_msg_command (gamedata.msg_keep_fire)
+				end
+			else
+				set_msg_command(gamedata.msg_miss)
+				set_msg_command (gamedata.msg_keep_fire)
+			end
+
 		end
 
 	mark_bomb(coord1: COORD; coord2: COORD)
+		local
+			shipSize1,shipSize2: INTEGER
 		do
 			mark_on_board(coord1)
 			mark_on_board(coord2)
+
+			-- Message is based on whether it's hit or not.
+			-- Check if it was a hit
+			gamedata.add_bomb  -- add for bomb
+			shipSize1 := 0
+			shipSize2 := 0
+			if check_if_it_was_hit(coord1) or check_if_it_was_hit(coord2) then
+
+				if check_if_it_was_hit(coord1) then
+					gamedata.add_score	-- add for hit score
+					if check_hit_caused_sink(coord1) then
+						-- Ship is sunk. Need Size of ship to display
+						shipSize1 := check_coord_is_hit (coord1)
+					end
+				end
+
+				if check_if_it_was_hit(coord2) then
+					gamedata.add_score	-- add for hit score
+					if check_hit_caused_sink(coord2) then
+						shipSize2 := check_coord_is_hit (coord2)
+					end
+				end
+
+				if shipSize1 > 0 and shipSize2 > 0 then -- both shot caused sink
+					gamedata.add_ship -- add for ship sunk
+					gamedata.add_ship -- add for ship sunk
+					set_msg_command(gamedata.msg_ships_sunk(shipSize1, shipSize2))
+					set_msg_command (gamedata.msg_keep_fire)
+				elseif shipSize1 > 0 then
+					gamedata.add_ship -- add for ship sunk
+					set_msg_command(gamedata.msg_ship_sunk(shipSize1))
+					set_msg_command (gamedata.msg_keep_fire)
+				elseif shipSize2 > 0 then
+					gamedata.add_ship -- add for ship sunk
+					set_msg_command(gamedata.msg_ship_sunk(shipSize2))
+					set_msg_command (gamedata.msg_keep_fire)
+				else
+					-- means just a hit without sink. (Not miss)
+					set_msg_command(gamedata.msg_hit)
+					set_msg_command (gamedata.msg_keep_fire)
+				end
+
+
+			else
+				set_msg_command(gamedata.msg_miss)
+				set_msg_command (gamedata.msg_keep_fire)
+			end
+
+
 		end
 
 	mark_empty(coord: COORD)
@@ -163,7 +250,6 @@ feature -- check
 	check_ship_already_hit(coord: COORD): BOOLEAN
 		do
 			-- this is for 'already fired coord'
-			print("%NCheck coords: " + coord.x.out + ", " + coord.y.out)
 			if implementation[coord.x, coord.y] ~ 'X' or implementation[coord.x, coord.y] ~ 'O' then
 				Result := True
 			else
@@ -184,7 +270,7 @@ feature -- check
 
 			across 1 |..| ship.size as i loop
 
-				print("%NImple Coord check: [" + ship.row.out + ", " + ship.col.out + "] " + implementation[ship.row.item, ship.col.item].out)
+				--print("%NImple Coord check: [" + ship.row.out + ", " + ship.col.out + "] " + implementation[ship.row.item, ship.col.item].out)
 
 				create coord.make (coord_x, coord_y)
 
@@ -199,7 +285,7 @@ feature -- check
 
 			end
 
-			print("%NCheck for Full Hit: " + numOfHit.out + " / " + ship.size.out)
+			--print("%NCheck for Full Hit: " + numOfHit.out + " / " + ship.size.out)
 
 			if ship.size ~ numOfHit then		-- Full hit
 				Result := True
@@ -227,6 +313,19 @@ feature -- check
 			end
 
 			Result := sunk
+		end
+
+	-- if all ships are sunk, win
+	check_win: BOOLEAN
+		do
+			Result := (gamedata.current_ships >= gamedata.current_ships_limit)
+		end
+
+	-- Assume 'check_win' checked first. So we know all ships are not sunk
+	check_lose: BOOLEAN
+		do
+			Result := (gamedata.current_fire >= gamedata.current_fire_limit and
+						gamedata.current_bomb >= gamedata.current_bomb_limit)
 		end
 
 feature -- check errors in commands

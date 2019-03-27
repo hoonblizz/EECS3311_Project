@@ -60,9 +60,17 @@ feature -- message
 			msg_error := a_message
 		end
 
+	-- In ETF_FIRE, for error cases, directly call 'set_msg_command'
+	--	but for commands in board, call 'set_msg_command_from_board' to get messages
 	set_msg_command(a_message: STRING)
 		do
 			msg_command.force(a_message, msg_command.count + 1)
+		end
+	set_msg_command_from_board
+		do
+			across board.msg_command as msg loop
+				set_msg_command(msg.item)
+			end
 		end
 
 	get_msg_numOfCmd: STRING
@@ -146,7 +154,7 @@ feature -- queries
 			tempRow,tempCol: INTEGER
 		do
 
-			update_current_total_score	-- just update total_score.
+			update_current_total_score	-- update total_score. GAMEDATA -> MODEL
 
 			Result := ""
 			if board.started then

@@ -57,30 +57,32 @@ feature -- command
 
 				model.set_msg_error(model.board.gamedata.err_ok)
 
+				model.set_msg_command_from_board	-- get messages from board and display
+
 				-- Message is based on whether it's hit or not.
 				-- Check if it was a hit
-				model.board.gamedata.add_shot  -- add for shot
+				--model.board.gamedata.add_shot  -- add for shot
 
-				if model.board.check_if_it_was_hit(coord) then
+				--if model.board.check_if_it_was_hit(coord) then
 
-					model.board.gamedata.add_score	-- add for hit score
+				--	model.board.gamedata.add_score	-- add for hit score
 
-					if model.board.check_hit_caused_sink(coord) then
+				--	if model.board.check_hit_caused_sink(coord) then
 						-- Ship is sunk. Need Size of ship to display
 
-						model.board.gamedata.add_ship -- add for ship sunk
+				--		model.board.gamedata.add_ship -- add for ship sunk
 
-						shipSize := model.board.check_coord_is_hit (coord)
-						model.set_msg_command(model.board.gamedata.msg_ship_sunk(shipSize))
-						model.set_msg_command (model.board.gamedata.msg_keep_fire)
-					else
-						model.set_msg_command(model.board.gamedata.msg_hit)
-						model.set_msg_command (model.board.gamedata.msg_keep_fire)
-					end
-				else
-					model.set_msg_command(model.board.gamedata.msg_miss)
-					model.set_msg_command (model.board.gamedata.msg_keep_fire)
-				end
+				--		shipSize := model.board.check_coord_is_hit (coord)
+				--		model.set_msg_command(model.board.gamedata.msg_ship_sunk(shipSize))
+				--		model.set_msg_command (model.board.gamedata.msg_keep_fire)
+				--	else
+				--		model.set_msg_command(model.board.gamedata.msg_hit)
+				--		model.set_msg_command (model.board.gamedata.msg_keep_fire)
+				--	end
+				--else
+				--	model.set_msg_command(model.board.gamedata.msg_miss)
+				--	model.set_msg_command (model.board.gamedata.msg_keep_fire)
+				--end
 
 			end
 

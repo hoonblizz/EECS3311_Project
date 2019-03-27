@@ -44,7 +44,6 @@ feature -- command
 				model.board.gamedata.update_current_total_score(model.current_total_score)
 				model.board.gamedata.update_current_total_score_limit(model.current_total_score_limit)
 
-
 				create coord.make (level_int, level_int)
 				model.set_msg_error (model.board.gamedata.err_ok)
 				model.set_msg_command (model.board.gamedata.msg_fire_away)
