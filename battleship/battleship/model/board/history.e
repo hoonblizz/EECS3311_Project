@@ -41,6 +41,7 @@ feature -- queries
 	after: BOOLEAN
 			-- Is there no valid cursor position to the right of cursor?
 		do
+			print("%NHISTORY - Check index, count: " + history.index.out + " = " + history.count.out + " + 1")
 			Result := history.index = history.count + 1
 		end
 

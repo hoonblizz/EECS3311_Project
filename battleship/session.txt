@@ -1,6 +1,7 @@
 debug_test(easy)
-fire([A,1])
-fire([C,3])
-fire([A,5])
+bomb([B, 4],[C, 4])
 undo
+redo
+undo
+fire([C, 4])
 undo

@@ -39,28 +39,36 @@ feature -- command
 
 			-- Start checking error of new coord before execute
 			if not model.board.started then
+
 				model.set_msg_error(model.board.gamedata.err_game_not_started)
 				model.set_msg_command (model.board.gamedata.msg_start_new)
 			elseif model.board.check_invalid_coord (coord) then
+
 				model.set_msg_error(model.board.gamedata.err_invalid_coord)
 				model.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif model.board.check_already_fired (coord) then
+
 				model.set_msg_error(model.board.gamedata.err_already_fired_coord)
 				model.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_no_shots then
+
 				model.set_msg_error(model.board.gamedata.err_no_shots)
 				model.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else
+
+				print("%NFIRE OP message BEFORE: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
 
 				model.board.history.extend_history (op)
 				op.execute
 
 				model.set_msg_error(model.board.gamedata.err_ok)
 				model.set_msg_command_from_board	-- get messages from board and display
-
-				-- set messages to 'op' for undo, redo
+				-- set messages to 'op' for undo, redo  execute
 				op.set_msg_error(model.get_msg_error)
 				op.set_msg_command(model.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1)
+				print("%NFIRE OP message AFTER: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
+
 
 				-- check if game is over.
 				if model.board.gameover then

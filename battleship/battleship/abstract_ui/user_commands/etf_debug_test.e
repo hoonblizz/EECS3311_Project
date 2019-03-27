@@ -22,6 +22,8 @@ feature -- command
 			coord: COORD
 			gamedata: GAMEDATA
     	do
+
+
 			-- perform some update on the model state
 			if not model.board.started then
 				level_int := level_str.as_integer_32
@@ -45,8 +47,14 @@ feature -- command
 				model.board.gamedata.update_current_total_score_limit(model.current_total_score_limit)
 
 				create coord.make (level_int, level_int)
+
+				-- clear messages before display
+				model.clear_msg_command
+				model.board.clear_msg_command
+
 				model.set_msg_error (model.board.gamedata.err_ok)
 				model.set_msg_command (model.board.gamedata.msg_fire_away)
+
 			else
 				model.set_msg_error(model.board.gamedata.err_game_already_started)
 
@@ -59,6 +67,7 @@ feature -- command
 				end
 
 			end
+
 			model.default_update
 			etf_cmd_container.on_change.notify ([Current])
     	end

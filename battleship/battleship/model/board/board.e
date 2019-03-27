@@ -56,7 +56,7 @@ feature {NONE} -- create
 			create coord_bomb2.make (1, 1)
 
 			create msg_command.make_empty
-		
+
 
 			create history.make
 		end
@@ -133,6 +133,7 @@ feature -- marking on board
 			shipSize: INTEGER
 		do
 			mark_on_board(coord)
+			clear_msg_command		-- clear message board before stack
 
 			-- Message is based on whether it's hit or not.
 			-- Check if it was a hit
@@ -188,6 +189,8 @@ feature -- marking on board
 		do
 			mark_on_board(coord1)
 			mark_on_board(coord2)
+			
+			clear_msg_command		-- clear message board before stack
 
 			-- Message is based on whether it's hit or not.
 			-- Check if it was a hit
@@ -257,7 +260,7 @@ feature -- marking on board
 					end
 				else
 					-- means just a hit without sink. (Not miss)
-					set_msg_command(gamedata.msg_hit)
+					set_msg_command (gamedata.msg_hit)
 					set_msg_command (gamedata.msg_keep_fire)
 				end
 
@@ -270,9 +273,10 @@ feature -- marking on board
 
 		end
 
-	mark_empty(coord: COORD)
+	mark_empty(coord: COORD; symbol: CHARACTER)	-- for undo
 		do
-			implementation.put ('_', coord.x.item, coord.y.item)
+			--print("%NMark previous CHAR in ["+ coord.x.out + ", "+ coord.y.out +"]: " + symbol.out)
+			implementation.put (symbol, coord.x.item, coord.y.item)
 		end
 
 feature -- check
@@ -420,6 +424,7 @@ feature -- check errors in commands
 		do
 			Result := (gamedata.current_fire > 0 or gamedata.current_bomb > 0)
 		end
+
 
 feature -- display
 	display_value_on_board(coord: COORD): CHARACTER

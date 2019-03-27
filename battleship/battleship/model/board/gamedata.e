@@ -127,7 +127,7 @@ feature --attributes
 	err_too_many_bombs: STRING = "Too many bombs"
 
 	-- giveup
-	
+
 feature -- update values
 
 	-- these updates are from 'MODEL' value to 'BOARD.GAMEDATA'
@@ -180,6 +180,17 @@ feature -- update values
 		do
 			current_ships := current_ships - 1
 		end
+
+	-- For undo, redo. See OPERTION_FIRE
+	update_shots(shots: INTEGER)
+		do current_fire := shots end
+	update_bombs(bombs: INTEGER)
+		do current_bomb := bombs end
+	update_ships(ships: INTEGER)
+		do current_ships := ships end
+	update_score(score: INTEGER)
+		do current_score := score end
+
 
 feature --query
 	get_level_int(level_str: INTEGER_64): INTEGER

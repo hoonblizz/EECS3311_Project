@@ -24,6 +24,15 @@ feature{NONE}
 		end
 
 feature -- deferred query
+	get_old_msg_error: STRING
+		deferred end
+
+	get_old_msg_command: STRING
+		deferred end
+
+	get_old_stateNum: INTEGER
+		deferred end
+
 	get_msg_error: STRING
 		deferred end
 
@@ -31,6 +40,9 @@ feature -- deferred query
 		deferred end
 
 	get_stateNum: INTEGER
+		deferred end
+
+	get_op_name: STRING
 		deferred end
 
 feature -- deferred commands

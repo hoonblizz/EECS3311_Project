@@ -68,6 +68,7 @@ feature -- message
 		end
 	set_msg_command_from_board
 		do
+			clear_msg_command -- clear before stack messages from BOARD
 			across board.msg_command as msg loop
 				set_msg_command(msg.item)
 			end
@@ -184,7 +185,7 @@ feature -- queries
 				Result := Result + board.gamedata.current_ships.out + "/" + board.gamedata.current_ships_limit.out
 
 				-- Each ships status
-				board.gamedata.test_ships_generated -- just testing
+				--board.gamedata.test_ships_generated -- just testing
 
 				i := board.gamedata.current_ships_limit
 				across board.gamedata.generated_ships as ship loop
@@ -234,13 +235,13 @@ feature -- queries
 
 	out : STRING
 		do
-	
+
 			create Result.make_from_string ("  " + get_msg_numOfCmd + " " + get_msg_error + " -> " + get_msg_command + "%N")
 
 			-- clear command message when error is OK.
 			--if get_msg_error ~ board.gamedata.err_ok then
-				clear_msg_command
-				board.clear_msg_command
+				--clear_msg_command
+				--board.clear_msg_command
 			--end
 
 			Result.append (board.out)
