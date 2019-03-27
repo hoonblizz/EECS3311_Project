@@ -21,6 +21,9 @@ feature {NONE} -- constructor
 			old_position2 := board.coord_bomb2
 			position1 := new_pos1
 			position2 := new_pos2
+			msg_error := model.get_msg_error
+			msg_command := model.get_msg_command
+			stateNum := model.numberofcommand
 		end
 
 feature
@@ -29,6 +32,19 @@ feature
 	old_position2: COORD
 	position1: COORD
 	position2: COORD
+	msg_error: STRING
+	msg_command: STRING
+	stateNum: INTEGER
+
+feature -- query
+	get_msg_error: STRING
+		do Result := msg_error end
+
+	get_msg_command: STRING
+		do Result := msg_command end
+
+	get_stateNum: INTEGER
+		do Result := stateNum end
 
 feature -- commands
 	-- At this point, assume all error cases are handled. (in ETF)

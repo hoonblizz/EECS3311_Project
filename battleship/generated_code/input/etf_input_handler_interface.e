@@ -120,36 +120,49 @@ feature -- parsing
 			args := evt.args
 			create dummy_cmd.make("dummy", [], abstract_ui)
 
-			if cmd_name ~ "new_game" then 
-				 if attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced) then 
-					 create {ETF_NEW_GAME} Result.make ("new_game", [level.value], abstract_ui) 
-				 else 
-					 Result := dummy_cmd 
-				 end 
+			if cmd_name ~ "new_game" then
+				 if attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced) then
+					 create {ETF_NEW_GAME} Result.make ("new_game", [level.value], abstract_ui)
+				 else
+					 Result := dummy_cmd
+				 end
 
-			elseif cmd_name ~ "debug_test" then 
-				 if attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced) then 
-					 create {ETF_DEBUG_TEST} Result.make ("debug_test", [level.value], abstract_ui) 
-				 else 
-					 Result := dummy_cmd 
-				 end 
+			elseif cmd_name ~ "debug_test" then
+				 if attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced) then
+					 create {ETF_DEBUG_TEST} Result.make ("debug_test", [level.value], abstract_ui)
+				 else
+					 Result := dummy_cmd
+				 end
 
-			elseif cmd_name ~ "fire" then 
-				 if (attached {ETF_TUPLE_ARG} args[1] as coordinate) and then coordinate.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate.value[1] as coordinate_row) and then (attached {ETF_INT_ARG} coordinate.value[2] as coordinate_column) and then (coordinate_row.value = A or else coordinate_row.value = B or else coordinate_row.value = C or else coordinate_row.value = D or else coordinate_row.value = E or else coordinate_row.value = F or else coordinate_row.value = G or else coordinate_row.value = H or else coordinate_row.value = I or else coordinate_row.value = J or else coordinate_row.value = K or else coordinate_row.value = L) and then 1 <= coordinate_column.value and then coordinate_column.value <= 12 then 
-					 create {ETF_FIRE} Result.make ("fire", [[coordinate_row.value, coordinate_column.value]], abstract_ui) 
-				 else 
-					 Result := dummy_cmd 
-				 end 
+			elseif cmd_name ~ "fire" then
+				 if (attached {ETF_TUPLE_ARG} args[1] as coordinate) and then coordinate.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate.value[1] as coordinate_row) and then (attached {ETF_INT_ARG} coordinate.value[2] as coordinate_column) and then (coordinate_row.value = A or else coordinate_row.value = B or else coordinate_row.value = C or else coordinate_row.value = D or else coordinate_row.value = E or else coordinate_row.value = F or else coordinate_row.value = G or else coordinate_row.value = H or else coordinate_row.value = I or else coordinate_row.value = J or else coordinate_row.value = K or else coordinate_row.value = L) and then 1 <= coordinate_column.value and then coordinate_column.value <= 12 then
+					 create {ETF_FIRE} Result.make ("fire", [[coordinate_row.value, coordinate_column.value]], abstract_ui)
+				 else
+					 Result := dummy_cmd
+				 end
 
-			elseif cmd_name ~ "bomb" then 
-				 if (attached {ETF_TUPLE_ARG} args[1] as coordinate1) and then coordinate1.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate1.value[1] as coordinate1_row) and then (attached {ETF_INT_ARG} coordinate1.value[2] as coordinate1_column) and then (coordinate1_row.value = A or else coordinate1_row.value = B or else coordinate1_row.value = C or else coordinate1_row.value = D or else coordinate1_row.value = E or else coordinate1_row.value = F or else coordinate1_row.value = G or else coordinate1_row.value = H or else coordinate1_row.value = I or else coordinate1_row.value = J or else coordinate1_row.value = K or else coordinate1_row.value = L) and then 1 <= coordinate1_column.value and then coordinate1_column.value <= 12 and then (attached {ETF_TUPLE_ARG} args[2] as coordinate2) and then coordinate2.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate2.value[1] as coordinate2_row) and then (attached {ETF_INT_ARG} coordinate2.value[2] as coordinate2_column) and then (coordinate2_row.value = A or else coordinate2_row.value = B or else coordinate2_row.value = C or else coordinate2_row.value = D or else coordinate2_row.value = E or else coordinate2_row.value = F or else coordinate2_row.value = G or else coordinate2_row.value = H or else coordinate2_row.value = I or else coordinate2_row.value = J or else coordinate2_row.value = K or else coordinate2_row.value = L) and then 1 <= coordinate2_column.value and then coordinate2_column.value <= 12 then 
-					 create {ETF_BOMB} Result.make ("bomb", [[coordinate1_row.value, coordinate1_column.value] , [coordinate2_row.value, coordinate2_column.value]], abstract_ui) 
-				 else 
-					 Result := dummy_cmd 
-				 end 
-			else 
-				 Result := dummy_cmd 
-			end 
+			elseif cmd_name ~ "bomb" then
+				 if (attached {ETF_TUPLE_ARG} args[1] as coordinate1) and then coordinate1.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate1.value[1] as coordinate1_row) and then (attached {ETF_INT_ARG} coordinate1.value[2] as coordinate1_column) and then (coordinate1_row.value = A or else coordinate1_row.value = B or else coordinate1_row.value = C or else coordinate1_row.value = D or else coordinate1_row.value = E or else coordinate1_row.value = F or else coordinate1_row.value = G or else coordinate1_row.value = H or else coordinate1_row.value = I or else coordinate1_row.value = J or else coordinate1_row.value = K or else coordinate1_row.value = L) and then 1 <= coordinate1_column.value and then coordinate1_column.value <= 12 and then (attached {ETF_TUPLE_ARG} args[2] as coordinate2) and then coordinate2.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate2.value[1] as coordinate2_row) and then (attached {ETF_INT_ARG} coordinate2.value[2] as coordinate2_column) and then (coordinate2_row.value = A or else coordinate2_row.value = B or else coordinate2_row.value = C or else coordinate2_row.value = D or else coordinate2_row.value = E or else coordinate2_row.value = F or else coordinate2_row.value = G or else coordinate2_row.value = H or else coordinate2_row.value = I or else coordinate2_row.value = J or else coordinate2_row.value = K or else coordinate2_row.value = L) and then 1 <= coordinate2_column.value and then coordinate2_column.value <= 12 then
+					 create {ETF_BOMB} Result.make ("bomb", [[coordinate1_row.value, coordinate1_column.value] , [coordinate2_row.value, coordinate2_column.value]], abstract_ui)
+				 else
+					 Result := dummy_cmd
+				 end
+
+			elseif cmd_name ~ "undo" then
+				if TRUE then
+					create {ETF_UNDO} Result.make ("undo", [], abstract_ui)
+				else
+					Result := dummy_cmd
+				end
+			elseif cmd_name ~ "redo" then
+				if TRUE then
+					create {ETF_REDO} Result.make ("redo", [], abstract_ui)
+				else
+					Result := dummy_cmd
+				end
+			else
+				 Result := dummy_cmd
+			end
 		end
 
 	find_invalid_evt_trace (
@@ -174,8 +187,8 @@ feature -- parsing
 			cmd_name := evt.name
 			args := evt.args
 
-			if cmd_name ~ "new_game" then 
-				if NOT( ( args.count = 1 ) AND THEN attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced)) then 
+			if cmd_name ~ "new_game" then
+				if NOT( ( args.count = 1 ) AND THEN attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced)) then
 					if NOT Result.is_empty then
 						Result.append ("%N")
 					end
@@ -183,8 +196,8 @@ feature -- parsing
 							"new_game(level: LEVEL = {easy, medium, hard, advanced})")
 				end
 
-			elseif cmd_name ~ "debug_test" then 
-				if NOT( ( args.count = 1 ) AND THEN attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced)) then 
+			elseif cmd_name ~ "debug_test" then
+				if NOT( ( args.count = 1 ) AND THEN attached {ETF_ENUM_INT_ARG} args[1] as level and then (level.value = easy or else level.value = medium or else level.value = hard or else level.value = advanced)) then
 					if NOT Result.is_empty then
 						Result.append ("%N")
 					end
@@ -192,8 +205,8 @@ feature -- parsing
 							"debug_test(level: LEVEL = {easy, medium, hard, advanced})")
 				end
 
-			elseif cmd_name ~ "fire" then 
-				if NOT( ( args.count = 1 ) AND THEN (attached {ETF_TUPLE_ARG} args[1] as coordinate) and then coordinate.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate.value[1] as coordinate_row) and then (attached {ETF_INT_ARG} coordinate.value[2] as coordinate_column) and then (coordinate_row.value = A or else coordinate_row.value = B or else coordinate_row.value = C or else coordinate_row.value = D or else coordinate_row.value = E or else coordinate_row.value = F or else coordinate_row.value = G or else coordinate_row.value = H or else coordinate_row.value = I or else coordinate_row.value = J or else coordinate_row.value = K or else coordinate_row.value = L) and then 1 <= coordinate_column.value and then coordinate_column.value <= 12) then 
+			elseif cmd_name ~ "fire" then
+				if NOT( ( args.count = 1 ) AND THEN (attached {ETF_TUPLE_ARG} args[1] as coordinate) and then coordinate.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate.value[1] as coordinate_row) and then (attached {ETF_INT_ARG} coordinate.value[2] as coordinate_column) and then (coordinate_row.value = A or else coordinate_row.value = B or else coordinate_row.value = C or else coordinate_row.value = D or else coordinate_row.value = E or else coordinate_row.value = F or else coordinate_row.value = G or else coordinate_row.value = H or else coordinate_row.value = I or else coordinate_row.value = J or else coordinate_row.value = K or else coordinate_row.value = L) and then 1 <= coordinate_column.value and then coordinate_column.value <= 12) then
 					if NOT Result.is_empty then
 						Result.append ("%N")
 					end
@@ -201,13 +214,30 @@ feature -- parsing
 							"fire(coordinate: COORDINATE = TUPLE[row: ROW = {A, B, C, D, E, F, G, H, I, J, K, L}; column: COLUMN = 1 .. 12])")
 				end
 
-			elseif cmd_name ~ "bomb" then 
-				if NOT( ( args.count = 2 ) AND THEN (attached {ETF_TUPLE_ARG} args[1] as coordinate1) and then coordinate1.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate1.value[1] as coordinate1_row) and then (attached {ETF_INT_ARG} coordinate1.value[2] as coordinate1_column) and then (coordinate1_row.value = A or else coordinate1_row.value = B or else coordinate1_row.value = C or else coordinate1_row.value = D or else coordinate1_row.value = E or else coordinate1_row.value = F or else coordinate1_row.value = G or else coordinate1_row.value = H or else coordinate1_row.value = I or else coordinate1_row.value = J or else coordinate1_row.value = K or else coordinate1_row.value = L) and then 1 <= coordinate1_column.value and then coordinate1_column.value <= 12 and then (attached {ETF_TUPLE_ARG} args[2] as coordinate2) and then coordinate2.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate2.value[1] as coordinate2_row) and then (attached {ETF_INT_ARG} coordinate2.value[2] as coordinate2_column) and then (coordinate2_row.value = A or else coordinate2_row.value = B or else coordinate2_row.value = C or else coordinate2_row.value = D or else coordinate2_row.value = E or else coordinate2_row.value = F or else coordinate2_row.value = G or else coordinate2_row.value = H or else coordinate2_row.value = I or else coordinate2_row.value = J or else coordinate2_row.value = K or else coordinate2_row.value = L) and then 1 <= coordinate2_column.value and then coordinate2_column.value <= 12) then 
+			elseif cmd_name ~ "bomb" then
+				if NOT( ( args.count = 2 ) AND THEN (attached {ETF_TUPLE_ARG} args[1] as coordinate1) and then coordinate1.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate1.value[1] as coordinate1_row) and then (attached {ETF_INT_ARG} coordinate1.value[2] as coordinate1_column) and then (coordinate1_row.value = A or else coordinate1_row.value = B or else coordinate1_row.value = C or else coordinate1_row.value = D or else coordinate1_row.value = E or else coordinate1_row.value = F or else coordinate1_row.value = G or else coordinate1_row.value = H or else coordinate1_row.value = I or else coordinate1_row.value = J or else coordinate1_row.value = K or else coordinate1_row.value = L) and then 1 <= coordinate1_column.value and then coordinate1_column.value <= 12 and then (attached {ETF_TUPLE_ARG} args[2] as coordinate2) and then coordinate2.value.count = 2 and then (attached {ETF_ENUM_INT_ARG} coordinate2.value[1] as coordinate2_row) and then (attached {ETF_INT_ARG} coordinate2.value[2] as coordinate2_column) and then (coordinate2_row.value = A or else coordinate2_row.value = B or else coordinate2_row.value = C or else coordinate2_row.value = D or else coordinate2_row.value = E or else coordinate2_row.value = F or else coordinate2_row.value = G or else coordinate2_row.value = H or else coordinate2_row.value = I or else coordinate2_row.value = J or else coordinate2_row.value = K or else coordinate2_row.value = L) and then 1 <= coordinate2_column.value and then coordinate2_column.value <= 12) then
 					if NOT Result.is_empty then
 						Result.append ("%N")
 					end
 					Result.append (evt_out_str + " does not conform to declaration " +
 							"bomb(coordinate1: COORDINATE = TUPLE[row: ROW = {A, B, C, D, E, F, G, H, I, J, K, L}; column: COLUMN = 1 .. 12] ; coordinate2: COORDINATE = TUPLE[row: ROW = {A, B, C, D, E, F, G, H, I, J, K, L}; column: COLUMN = 1 .. 12])")
+				end
+			elseif cmd_name ~ "undo" then
+				if FALSE then
+					if NOT Result.is_empty then
+						Result.append ("%N")
+					end
+					Result.append (evt_out_str + " does not conform to declaration " +
+							"undo")
+				end
+
+			elseif cmd_name ~ "redo" then
+				if FALSE then
+					if NOT Result.is_empty then
+						Result.append ("%N")
+					end
+					Result.append (evt_out_str + " does not conform to declaration " +
+							"redo")
 				end
 			else
 				if NOT Result.is_empty then

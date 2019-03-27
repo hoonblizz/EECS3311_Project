@@ -1,6 +1,6 @@
-debug_test(hard)
-debug_test(advanced)
-fire([G, 2])
-bomb([G, 2],[G, 3])
-bomb([G, 2],[G, 2])
-bomb([G, 3],[G, 4])
+debug_test(easy)
+fire([A,1])
+fire([C,3])
+fire([A,5])
+undo
+undo

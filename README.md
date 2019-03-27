@@ -1,8 +1,16 @@
 # EECS3311_Project
 2018-2019 Winter
 
+## Adding a new command
+In this project, number of new command must be registered. <br>
+To do that,<br>
+First, goto generated_code -> abstract_ui -> user_commands<br>
+Open **ETF_TYPE_CONSTRAINTS** and add new command there.
+(2 places)
 
-
+Second, goto generated_code -> input <br>
+Open **ETF_INPUT_HANDLER_INTERFACE** and add new command there.
+(2 places)
 
 ## Trouble Shooting
 ### gtk/gtk.h file not found

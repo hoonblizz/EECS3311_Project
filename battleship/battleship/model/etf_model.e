@@ -123,12 +123,12 @@ feature -- model operations
 
 	-- these updates are from 'BOARD.GAMEDATA' to 'MODEL'
 	--		See BOARD for comparison
-	update_current_game
+	update_current_game		-- only updated when debug_test or new_game
 		do
-			current_game := board.gamedata.current_game + 1
+			current_game := current_game + 1
 		end
 
-	update_current_total_score
+	update_current_total_score	-- for realtime update in score_out.
 		do
 			current_total_score := board.gamedata.current_total_score
 		end
@@ -157,7 +157,7 @@ feature -- queries
 			update_current_total_score	-- update total_score. GAMEDATA -> MODEL
 
 			Result := ""
-			if board.started then
+			if board.started or board.gameover then
 				Result := "%N  "
 				-- Current Game
 				Result := Result + "Current Game"
@@ -234,11 +234,13 @@ feature -- queries
 
 	out : STRING
 		do
+	
 			create Result.make_from_string ("  " + get_msg_numOfCmd + " " + get_msg_error + " -> " + get_msg_command + "%N")
 
 			-- clear command message when error is OK.
 			--if get_msg_error ~ board.gamedata.err_ok then
 				clear_msg_command
+				board.clear_msg_command
 			--end
 
 			Result.append (board.out)

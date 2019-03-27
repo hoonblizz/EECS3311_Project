@@ -38,7 +38,7 @@ feature -- command
 				-- GAMEDATA to MODEL
 				model.update_current_game
 				model.update_current_total_score_limit
-				model.update_current_total_score
+				--model.update_current_total_score -- done when gameover
 				-- MODEL to GAMEDATA
 				model.board.gamedata.update_current_game(model.board.gamedata.current_game)
 				model.board.gamedata.update_current_total_score(model.current_total_score)

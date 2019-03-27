@@ -1,55 +1,55 @@
 class
  	 ETF_TYPE_CONSTRAINTS
 
-feature -- type queries 
+feature -- type queries
 
-	is_column(etf_v: INTEGER_64): BOOLEAN 
+	is_column(etf_v: INTEGER_64): BOOLEAN
 		require
 			comment("etf_v: COLUMN = 1 .. 12")
 		do
-			 Result := 
+			 Result :=
 				(1 <= etf_v) and then (etf_v <= 12)
 		ensure
-			 Result = 
+			 Result =
 				(1 <= etf_v) and then (etf_v <= 12)
 		end
 
-	is_row(etf_v: INTEGER_64): BOOLEAN 
+	is_row(etf_v: INTEGER_64): BOOLEAN
 		require
 			comment("etf_v: ROW = {A, B, C, D, E, F, G, H, I, J, K, L}")
 		do
-			 Result := 
+			 Result :=
 				(( etf_v ~ A ) or else ( etf_v ~ B ) or else ( etf_v ~ C ) or else ( etf_v ~ D ) or else ( etf_v ~ E ) or else ( etf_v ~ F ) or else ( etf_v ~ G ) or else ( etf_v ~ H ) or else ( etf_v ~ I ) or else ( etf_v ~ J ) or else ( etf_v ~ K ) or else ( etf_v ~ L ))
 		ensure
-			 Result = 
+			 Result =
 				(( etf_v ~ A ) or else ( etf_v ~ B ) or else ( etf_v ~ C ) or else ( etf_v ~ D ) or else ( etf_v ~ E ) or else ( etf_v ~ F ) or else ( etf_v ~ G ) or else ( etf_v ~ H ) or else ( etf_v ~ I ) or else ( etf_v ~ J ) or else ( etf_v ~ K ) or else ( etf_v ~ L ))
 		end
 
-	is_coordinate(etf_v: TUPLE[row: INTEGER_64; column: INTEGER_64]): BOOLEAN 
+	is_coordinate(etf_v: TUPLE[row: INTEGER_64; column: INTEGER_64]): BOOLEAN
 		require
 			comment("etf_v: COORDINATE = TUPLE[row: ROW = {A, B, C, D, E, F, G, H, I, J, K, L}; column: COLUMN = 1 .. 12]")
 		do
-			 Result := 
+			 Result :=
 				         is_row(etf_v.row)
 				and then is_column(etf_v.column)
 		ensure
-			 Result = 
+			 Result =
 				         is_row(etf_v.row)
 				and then is_column(etf_v.column)
 		end
 
-	is_level(etf_v: INTEGER_64): BOOLEAN 
+	is_level(etf_v: INTEGER_64): BOOLEAN
 		require
 			comment("etf_v: LEVEL = {easy, medium, hard, advanced}")
 		do
-			 Result := 
+			 Result :=
 				(( etf_v ~ easy ) or else ( etf_v ~ medium ) or else ( etf_v ~ hard ) or else ( etf_v ~ advanced ))
 		ensure
-			 Result = 
+			 Result =
 				(( etf_v ~ easy ) or else ( etf_v ~ medium ) or else ( etf_v ~ hard ) or else ( etf_v ~ advanced ))
 		end
 
-feature -- constants for enumerated items 
+feature -- constants for enumerated items
 	A: INTEGER =1
 	B: INTEGER =2
 	C: INTEGER =3
@@ -116,6 +116,8 @@ feature -- query on declarations of event parameters
 			debug_test_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
 			fire_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
 			bomb_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
+			undo_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
+			redo_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
 		do
 			create Result.make (10)
 			Result.compare_objects
@@ -136,6 +138,14 @@ feature -- query on declarations of event parameters
 			bomb_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)), "coordinate1")
 			bomb_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)), "coordinate2")
 			Result.extend (bomb_param_types, "bomb")
+
+			-- undo, redo
+			create undo_param_types.make (10)
+			undo_param_types.compare_objects
+			Result.extend (undo_param_types, "undo")
+			create redo_param_types.make (10)
+			redo_param_types.compare_objects
+			Result.extend (redo_param_types, "redo")
 		end
 feature -- query on declarations of event parameters
 	evt_param_types_list : HASH_TABLE[LINKED_LIST[ETF_PARAM_TYPE], STRING]
@@ -144,6 +154,8 @@ feature -- query on declarations of event parameters
 			debug_test_param_types: LINKED_LIST[ETF_PARAM_TYPE]
 			fire_param_types: LINKED_LIST[ETF_PARAM_TYPE]
 			bomb_param_types: LINKED_LIST[ETF_PARAM_TYPE]
+			undo_param_types: LINKED_LIST[ETF_PARAM_TYPE]
+			redo_param_types: LINKED_LIST[ETF_PARAM_TYPE]
 		do
 			create Result.make (10)
 			Result.compare_objects
@@ -164,6 +176,14 @@ feature -- query on declarations of event parameters
 			bomb_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)))
 			bomb_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)))
 			Result.extend (bomb_param_types, "bomb")
+
+			-- undo, redo
+			create undo_param_types.make
+			undo_param_types.compare_objects
+			Result.extend (undo_param_types, "undo")
+			create redo_param_types.make
+			redo_param_types.compare_objects
+			Result.extend (redo_param_types, "redo")
 		end
 feature -- comments for contracts
 	comment(etf_s: STRING): BOOLEAN

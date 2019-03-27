@@ -114,6 +114,20 @@ feature --attributes
 	err_no_bomb: STRING ="No bombs remaining"
 	err_adjacent_coord: STRING = "Bomb coordinates must be adjacent"
 
+	-- undo, redo
+	err_nothing_to_undo: STRING = "Nothing to undo"
+	err_nothing_to_redo: STRING = "Nothing to redo"
+
+	-- custom_setup, custom_setup_test
+	err_not_enough_ships: STRING = "Not enough ships"
+	err_too_many_ships: STRING = "Too many ships"
+	err_not_enough_shots: STRING = "Not enough shots"
+	err_too_many_shots: STRING = "Too many shots"
+	err_not_enough_bombs: STRING = "Not enough bombs"
+	err_too_many_bombs: STRING = "Too many bombs"
+
+	-- giveup
+	
 feature -- update values
 
 	-- these updates are from 'MODEL' value to 'BOARD.GAMEDATA'
@@ -131,10 +145,10 @@ feature -- update values
 			current_total_score_limit := val
 		end
 
-	add_score
+	add_score(shipSize: INTEGER)
 		do
-			current_score := current_score + 1
-			current_total_score := current_total_score + 1
+			current_score := current_score + shipSize
+			current_total_score := current_total_score + shipSize
 		end
 	add_shot
 		do
@@ -149,10 +163,10 @@ feature -- update values
 			current_ships := current_ships + 1
 		end
 
-	sub_score
+	sub_score(shipSize: INTEGER)
 		do
-			current_score := current_score - 1
-			current_total_score := current_total_score - 1
+			current_score := current_score - shipSize
+			current_total_score := current_total_score - shipSize
 		end
 	sub_shot
 		do

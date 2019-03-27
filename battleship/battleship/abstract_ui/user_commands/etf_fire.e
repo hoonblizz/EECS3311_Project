@@ -56,33 +56,18 @@ feature -- command
 				op.execute
 
 				model.set_msg_error(model.board.gamedata.err_ok)
-
 				model.set_msg_command_from_board	-- get messages from board and display
 
-				-- Message is based on whether it's hit or not.
-				-- Check if it was a hit
-				--model.board.gamedata.add_shot  -- add for shot
+				-- set messages to 'op' for undo, redo
+				op.set_msg_error(model.get_msg_error)
+				op.set_msg_command(model.get_msg_command)
 
-				--if model.board.check_if_it_was_hit(coord) then
+				-- check if game is over.
+				if model.board.gameover then
+					-- transfer data to model. Some are done when debig_test or new_game
+					model.update_current_total_score
+				end
 
-				--	model.board.gamedata.add_score	-- add for hit score
-
-				--	if model.board.check_hit_caused_sink(coord) then
-						-- Ship is sunk. Need Size of ship to display
-
-				--		model.board.gamedata.add_ship -- add for ship sunk
-
-				--		shipSize := model.board.check_coord_is_hit (coord)
-				--		model.set_msg_command(model.board.gamedata.msg_ship_sunk(shipSize))
-				--		model.set_msg_command (model.board.gamedata.msg_keep_fire)
-				--	else
-				--		model.set_msg_command(model.board.gamedata.msg_hit)
-				--		model.set_msg_command (model.board.gamedata.msg_keep_fire)
-				--	end
-				--else
-				--	model.set_msg_command(model.board.gamedata.msg_miss)
-				--	model.set_msg_command (model.board.gamedata.msg_keep_fire)
-				--end
 
 			end
 

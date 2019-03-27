@@ -18,11 +18,32 @@ feature {NONE} -- constructor
 		do
 			old_position := board.coord_fire
 			position := a_new_position
+			msg_error := model.get_msg_error
+			msg_command := model.get_msg_command
+			stateNum := model.numberofcommand
 		end
 
 feature
 	old_position: COORD
 	position: COORD
+	msg_error: STRING
+	msg_command: STRING
+	stateNum: INTEGER
+
+feature -- query
+	set_msg_error(msg: STRING)
+		do msg_error := msg end
+	set_msg_command(msg: STRING)
+		do msg_command := msg end
+
+	get_msg_error: STRING
+		do Result := msg_error end
+
+	get_msg_command: STRING
+		do Result := msg_command end
+
+	get_stateNum: INTEGER
+		do Result := stateNum end
 
 feature -- commands
 	-- At this point, assume all error cases are handled. (in ETF)

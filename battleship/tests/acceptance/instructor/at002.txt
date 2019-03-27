@@ -1,0 +1,26 @@
+-- user test 2
+debug_test(hard)
+debug_test(advanced)
+fire([G,2])
+bomb([G,2],[G,3])		-- already fired there
+bomb([G,2],[G,2])		-- invalid coordinate
+bomb([G,3],[G,4])		
+fire([F,6])
+fire([H,6])	
+bomb([G,5],[G,6])
+bomb([G,6],[G,5])		-- already fired there
+debug_test(easy)		-- game already started
+bomb([D,2],[C,2])		
+bomb([B,8],[C,8])
+bomb([D,8],[E,8])
+bomb([F,8],[G,8])		-- no bombs remaining
+fire([F,8])			
+fire([G,8])	
+fire([F,9])			-- invalid coordiate
+fire([H,8])
+fire([A,8])			-- game not started
+debug_test(easy)
+bomb([C,2],[C,3])
+fire([D,4])
+fire([D,4])
+new_game(easy)			-- notice scores reset

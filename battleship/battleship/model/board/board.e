@@ -56,6 +56,7 @@ feature {NONE} -- create
 			create coord_bomb2.make (1, 1)
 
 			create msg_command.make_empty
+		
 
 			create history.make
 		end
@@ -72,17 +73,25 @@ feature  -- game started
     started: BOOLEAN
     	-- has the game started?
 
+    gameover: BOOLEAN
+
     debugMode: BOOLEAN	-- is it debug mode now?
 
     set_started
+    	do started := True end
+    set_not_started
+    	do started := False end
+    set_gameover
     	do
-        	started := True
-    	end
+    		gameover := True
+    		set_not_started
+    		-- transfer values to model
 
-    set_debugMode
-    	do
-    		debugMode := True
     	end
+    set_not_gameover
+    	do gameover := False end
+    set_debugMode
+    	do debugMode := True end
 
 
 feature -- history
@@ -102,8 +111,10 @@ feature -- variables for record coords
 	--	So in ETF_FIRE, use 'set_msg_command_from_board' in MODEL to recieve messages
 	msg_command: ARRAY[STRING]
 	set_msg_command(msg: STRING)
+		do msg_command.force(msg, msg_command.count + 1) end
+	clear_msg_command
 		do
-			msg_command.force(msg, msg_command.count + 1)
+			msg_command.make_empty
 		end
 
 feature -- marking on board
@@ -129,23 +140,44 @@ feature -- marking on board
 
 			if check_if_it_was_hit(coord) then
 
-				gamedata.add_score	-- add for hit score
-
 				if check_hit_caused_sink(coord) then
 					-- Ship is sunk. Need Size of ship to display
+					shipSize := check_coord_is_hit (coord)
 
 					gamedata.add_ship -- add for ship sunk
+					gamedata.add_score(shipSize)	-- add for hit score when ship sunk
 
-					shipSize := check_coord_is_hit (coord)
 					set_msg_command(gamedata.msg_ship_sunk(shipSize))
-					set_msg_command (gamedata.msg_keep_fire)
+					-- if all ships sunk, win.
+					if check_win then
+						set_msg_command (gamedata.msg_win)
+						set_gameover
+					elseif check_lose then
+						set_msg_command (gamedata.msg_game_over)
+						set_gameover
+					else
+						set_msg_command (gamedata.msg_keep_fire)
+					end
+
 				else
 					set_msg_command(gamedata.msg_hit)
-					set_msg_command (gamedata.msg_keep_fire)
+
+					if check_lose then	-- ship not sunk, so just check for lose
+						set_msg_command (gamedata.msg_game_over)
+						set_gameover
+					else
+						set_msg_command (gamedata.msg_keep_fire)
+					end
+
 				end
 			else
 				set_msg_command(gamedata.msg_miss)
-				set_msg_command (gamedata.msg_keep_fire)
+				if check_lose then	-- ship not sunk, so just check for lose
+					set_msg_command (gamedata.msg_game_over)
+					set_gameover
+				else
+					set_msg_command (gamedata.msg_keep_fire)
+				end
 			end
 
 		end
@@ -165,7 +197,6 @@ feature -- marking on board
 			if check_if_it_was_hit(coord1) or check_if_it_was_hit(coord2) then
 
 				if check_if_it_was_hit(coord1) then
-					gamedata.add_score	-- add for hit score
 					if check_hit_caused_sink(coord1) then
 						-- Ship is sunk. Need Size of ship to display
 						shipSize1 := check_coord_is_hit (coord1)
@@ -173,25 +204,57 @@ feature -- marking on board
 				end
 
 				if check_if_it_was_hit(coord2) then
-					gamedata.add_score	-- add for hit score
 					if check_hit_caused_sink(coord2) then
 						shipSize2 := check_coord_is_hit (coord2)
 					end
 				end
 
-				if shipSize1 > 0 and shipSize2 > 0 then -- both shot caused sink
+				if shipSize1 > 0 and shipSize2 > 0 and shipSize1 /= shipSize2 then -- both shot caused sink
 					gamedata.add_ship -- add for ship sunk
 					gamedata.add_ship -- add for ship sunk
+
+					gamedata.add_score(shipSize1)	-- add for hit score when sunk
+					gamedata.add_score(shipSize2)
+
 					set_msg_command(gamedata.msg_ships_sunk(shipSize1, shipSize2))
-					set_msg_command (gamedata.msg_keep_fire)
+					-- if all ships sunk, win.
+					if check_win then
+						set_msg_command (gamedata.msg_win)
+						set_gameover
+					elseif check_lose then
+						set_msg_command (gamedata.msg_game_over)
+						set_gameover
+					else
+						set_msg_command (gamedata.msg_keep_fire)
+					end
 				elseif shipSize1 > 0 then
 					gamedata.add_ship -- add for ship sunk
+					gamedata.add_score(shipSize1)
 					set_msg_command(gamedata.msg_ship_sunk(shipSize1))
-					set_msg_command (gamedata.msg_keep_fire)
+					-- if all ships sunk, win.
+					if check_win then
+						set_msg_command (gamedata.msg_win)
+						set_gameover
+					elseif check_lose then
+						set_msg_command (gamedata.msg_game_over)
+						set_gameover
+					else
+						set_msg_command (gamedata.msg_keep_fire)
+					end
 				elseif shipSize2 > 0 then
 					gamedata.add_ship -- add for ship sunk
+					gamedata.add_score(shipSize2)
 					set_msg_command(gamedata.msg_ship_sunk(shipSize2))
-					set_msg_command (gamedata.msg_keep_fire)
+					-- if all ships sunk, win.
+					if check_win then
+						set_msg_command (gamedata.msg_win)
+						set_gameover
+					elseif check_lose then
+						set_msg_command (gamedata.msg_game_over)
+						set_gameover
+					else
+						set_msg_command (gamedata.msg_keep_fire)
+					end
 				else
 					-- means just a hit without sink. (Not miss)
 					set_msg_command(gamedata.msg_hit)
@@ -380,10 +443,12 @@ feature -- out
 			across 1 |..| size as h loop
 				Result := Result + h.item.out
 				-- if less than 10, leave 2 spaces. Otherwise, 1 space
-				if h.item < 10 then
-					Result := Result + "  "
-				else
-					Result := Result + " "
+				if h.item < size then
+					if h.item < 10 then
+						Result := Result + "  "
+					else
+						Result := Result + " "
+					end
 				end
 			end
 			Result := Result + "%N  "
@@ -403,7 +468,7 @@ feature -- out
 			-- representation of board
 		do
 			Result := ""
-			if started then
+			if started or gameover then
 				Result := board_out
 			end
 		end
