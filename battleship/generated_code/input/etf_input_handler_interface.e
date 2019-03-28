@@ -160,6 +160,12 @@ feature -- parsing
 				else
 					Result := dummy_cmd
 				end
+			elseif cmd_name ~ "give_up" then
+				if TRUE then
+					create {ETF_GIVE_UP} Result.make ("give_up", [], abstract_ui)
+				else
+					Result := dummy_cmd
+				end
 			else
 				 Result := dummy_cmd
 			end
@@ -238,6 +244,14 @@ feature -- parsing
 					end
 					Result.append (evt_out_str + " does not conform to declaration " +
 							"redo")
+				end
+			elseif cmd_name ~ "give_up" then
+				if FALSE then
+					if NOT Result.is_empty then
+						Result.append ("%N")
+					end
+					Result.append (evt_out_str + " does not conform to declaration " +
+							"give_up")
 				end
 			else
 				if NOT Result.is_empty then

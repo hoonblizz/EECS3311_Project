@@ -118,21 +118,26 @@ feature -- query on declarations of event parameters
 			bomb_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
 			undo_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
 			redo_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
+			give_up_param_types: HASH_TABLE[ETF_PARAM_TYPE, STRING]
 		do
 			create Result.make (10)
 			Result.compare_objects
+
 			create new_game_param_types.make (10)
 			new_game_param_types.compare_objects
 			new_game_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("LEVEL", create {ETF_ENUM_PARAM}.make(<<"easy", "medium", "hard", "advanced">>)), "level")
 			Result.extend (new_game_param_types, "new_game")
+
 			create debug_test_param_types.make (10)
 			debug_test_param_types.compare_objects
 			debug_test_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("LEVEL", create {ETF_ENUM_PARAM}.make(<<"easy", "medium", "hard", "advanced">>)), "level")
 			Result.extend (debug_test_param_types, "debug_test")
+
 			create fire_param_types.make (10)
 			fire_param_types.compare_objects
 			fire_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)), "coordinate")
 			Result.extend (fire_param_types, "fire")
+
 			create bomb_param_types.make (10)
 			bomb_param_types.compare_objects
 			bomb_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)), "coordinate1")
@@ -143,9 +148,16 @@ feature -- query on declarations of event parameters
 			create undo_param_types.make (10)
 			undo_param_types.compare_objects
 			Result.extend (undo_param_types, "undo")
+
 			create redo_param_types.make (10)
 			redo_param_types.compare_objects
 			Result.extend (redo_param_types, "redo")
+
+			-- give_up
+			create give_up_param_types.make (10)
+			give_up_param_types.compare_objects
+			Result.extend (give_up_param_types, "give_up")
+
 		end
 feature -- query on declarations of event parameters
 	evt_param_types_list : HASH_TABLE[LINKED_LIST[ETF_PARAM_TYPE], STRING]
@@ -156,21 +168,26 @@ feature -- query on declarations of event parameters
 			bomb_param_types: LINKED_LIST[ETF_PARAM_TYPE]
 			undo_param_types: LINKED_LIST[ETF_PARAM_TYPE]
 			redo_param_types: LINKED_LIST[ETF_PARAM_TYPE]
+			give_up_param_types: LINKED_LIST[ETF_PARAM_TYPE]
 		do
 			create Result.make (10)
 			Result.compare_objects
+
 			create new_game_param_types.make
 			new_game_param_types.compare_objects
 			new_game_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("LEVEL", create {ETF_ENUM_PARAM}.make(<<"easy", "medium", "hard", "advanced">>)))
 			Result.extend (new_game_param_types, "new_game")
+
 			create debug_test_param_types.make
 			debug_test_param_types.compare_objects
 			debug_test_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("LEVEL", create {ETF_ENUM_PARAM}.make(<<"easy", "medium", "hard", "advanced">>)))
 			Result.extend (debug_test_param_types, "debug_test")
+
 			create fire_param_types.make
 			fire_param_types.compare_objects
 			fire_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)))
 			Result.extend (fire_param_types, "fire")
+
 			create bomb_param_types.make
 			bomb_param_types.compare_objects
 			bomb_param_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("COORDINATE", create {ETF_TUPLE_PARAM}.make(<<create {ETF_PARAM_DECL}.make("row", create {ETF_NAMED_PARAM_TYPE}.make("ROW", create {ETF_ENUM_PARAM}.make(<<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>))), create {ETF_PARAM_DECL}.make("column", create {ETF_NAMED_PARAM_TYPE}.make("COLUMN", create {ETF_INTERVAL_PARAM}.make(1, 12)))>>)))
@@ -184,6 +201,12 @@ feature -- query on declarations of event parameters
 			create redo_param_types.make
 			redo_param_types.compare_objects
 			Result.extend (redo_param_types, "redo")
+
+			-- give_up
+			create give_up_param_types.make
+			give_up_param_types.compare_objects
+			Result.extend (give_up_param_types, "give_up")
+
 		end
 feature -- comments for contracts
 	comment(etf_s: STRING): BOOLEAN

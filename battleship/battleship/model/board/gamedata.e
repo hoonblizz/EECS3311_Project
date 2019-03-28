@@ -127,6 +127,7 @@ feature --attributes
 	err_too_many_bombs: STRING = "Too many bombs"
 
 	-- giveup
+	err_gave_up: STRING = "You gave up!"
 
 feature -- update values
 
