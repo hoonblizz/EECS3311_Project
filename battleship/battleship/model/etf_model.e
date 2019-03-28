@@ -22,6 +22,7 @@ feature {NONE} -- Initialization
 		do
 			make_board (4, False)
 			numberOfCommand := 0
+			numberOfCommand_ref := 0		-- only for undo,redo
 
 			current_game := 0
 			current_total_score := 0
@@ -29,6 +30,8 @@ feature {NONE} -- Initialization
 			message := ""
 			msg_error := board.gamedata.err_ok
 			msg_command := <<board.gamedata.msg_start_new>>
+
+			msg_error_reference := ""	-- in general, it'm empty. But in undo, redo
 		end
 
 feature -- board
@@ -53,11 +56,16 @@ feature -- message
 
 	message: STRING
 	msg_error: STRING
+	msg_error_reference: STRING	-- only for undo, redo cases
 	msg_command: ARRAY[STRING	]
 
 	set_msg_error(a_message: STRING)
 		do
 			msg_error := a_message
+		end
+	set_msg_error_reference(a_message: STRING)
+		do
+			msg_error_reference := a_message
 		end
 
 	-- In ETF_FIRE, for error cases, directly call 'set_msg_command'
@@ -83,6 +91,10 @@ feature -- message
 		do
 			Result := msg_error
 		end
+	get_msg_error_reference: STRING		-- only for undo, redo
+		do
+			Result := msg_error_reference
+		end
 
 	get_msg_command: STRING
 		local
@@ -107,8 +119,16 @@ feature -- message
 			msg_command.make_empty
 		end
 
+	clear_msg_error_reference
+		do msg_error_reference := "" end
+
 feature -- model attributes
 	numberOfCommand : INTEGER
+	-- just for undo, redo. Check OPERATION_FIRE
+	--		only update (set same as numberOfCommand)
+	--	 	when history.extend happened. (when this happens, all rights are removed)
+	--		
+	numberOfCommand_ref: INTEGER
 
 	-- These values don't change when new game started.
 	current_game: INTEGER -- number of game currently running
@@ -120,6 +140,10 @@ feature -- model operations
 			-- Perform update to the model state.
 		do
 			numberOfCommand := numberOfCommand + 1
+		end
+	update_stateNum_ref(val: INTEGER)		-- only for undo,redo message
+		do
+			numberOfCommand_ref := val
 		end
 
 	-- these updates are from 'BOARD.GAMEDATA' to 'MODEL'
@@ -236,7 +260,7 @@ feature -- queries
 	out : STRING
 		do
 
-			create Result.make_from_string ("  " + get_msg_numOfCmd + " " + get_msg_error + " -> " + get_msg_command + "%N")
+			create Result.make_from_string ("  " + get_msg_numOfCmd + " " + msg_error_reference + get_msg_error + " -> " + get_msg_command + "%N")
 
 			-- clear command message when error is OK.
 			--if get_msg_error ~ board.gamedata.err_ok then

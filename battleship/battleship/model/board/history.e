@@ -41,7 +41,7 @@ feature -- queries
 	after: BOOLEAN
 			-- Is there no valid cursor position to the right of cursor?
 		do
-			print("%NHISTORY - Check index, count: " + history.index.out + " = " + history.count.out + " + 1")
+			--print("%NHISTORY - Check index, count: " + history.index.out + " = " + history.count.out + " + 1")
 			Result := history.index = history.count + 1
 		end
 
@@ -50,6 +50,7 @@ feature -- queries
 		do
 			Result := history.index = 0
 		end
+
 
 feature -- comands
 	extend_history(a_op: OPERATION)
@@ -78,6 +79,12 @@ feature -- comands
 			end
 		end
 
+	-- when Player win or lose. Reset to stop undo, redo
+	--	from first element of history until 'no after', remove elements
+	remove_all
+		do
+			create {ARRAYED_LIST[OPERATION]}history.make (10)
+		end
 
 
 	forth
@@ -94,6 +101,21 @@ feature -- comands
 			history.back
 		end
 
+	display_all		-- only for testing. See all contents
+		do
+			print("%N------------")
+			print("%N   HISTORY")
+			across history as el loop
+				print("%N*****OP Name: " + el.item.get_op_name.out)
+				print("%NOLD state: " + el.item.get_old_statenum.out)
+				print("%NOLD error: " + el.item.get_old_msg_error.out)
+				print("%NOLD msg: " + el.item.get_old_msg_command.out)
+				print("%Nstate: " + el.item.get_statenum.out)
+				print("%Nerror: " + el.item.get_msg_error.out)
+				print("%Nmsg: " + el.item.get_msg_command.out)
+			end
+			print("%N------------")
+		end
 
 
 end

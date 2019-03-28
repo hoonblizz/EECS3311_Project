@@ -20,18 +20,20 @@ feature {NONE} -- constructor
 			position := a_new_position
 			old_msg_error := model.get_msg_error
 			old_msg_command := model.get_msg_command
-			old_stateNum := model.numberofcommand
+			old_stateNum := model.numberOfCommand_ref
+
 			msg_error := model.get_msg_error
 			msg_command := model.get_msg_command
 			stateNum := model.numberofcommand
 
-			print("%NOP_FIRE make: state "+ old_stateNum.out + " " + old_msg_error.out + " -> " + old_msg_command.out)
+			print("%NFIRE OP make: state "+ old_stateNum.out + " " + old_msg_error.out + " -> " + old_msg_command.out)
 
 			-- in ETF_FIRE, values are stored once again BEFORE execute
 			old_shots := board.gamedata.current_fire
 			old_bombs := board.gamedata.current_bomb
 			old_ships := board.gamedata.current_ships
 			old_score := board.gamedata.current_score
+			old_total_score := board.gamedata.current_total_score
 		end
 
 feature
@@ -50,7 +52,7 @@ feature
 	new_implementation: CHARACTER
 
 	-- also save shots, bombs, ships, score
-	old_shots, old_bombs, old_ships, old_score: INTEGER
+	old_shots, old_bombs, old_ships, old_score, old_total_score: INTEGER
 
 feature -- query
 	set_msg_error(msg: STRING)
@@ -102,6 +104,7 @@ feature -- commands
 			board.gamedata.update_bombs(old_bombs)
 			board.gamedata.update_ships(old_ships)
 			board.gamedata.update_score(old_score)
+			board.gamedata.update_total_score(old_total_score)
 
 		end
 

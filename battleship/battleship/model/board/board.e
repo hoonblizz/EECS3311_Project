@@ -85,7 +85,8 @@ feature  -- game started
     	do
     		gameover := True
     		set_not_started
-    		-- transfer values to model
+    		-- transfer values to model is called ETF_FIRE, ETF_BOMB
+			-- History clear is also called there
 
     	end
     set_not_gameover
@@ -189,7 +190,7 @@ feature -- marking on board
 		do
 			mark_on_board(coord1)
 			mark_on_board(coord2)
-			
+
 			clear_msg_command		-- clear message board before stack
 
 			-- Message is based on whether it's hit or not.
@@ -431,8 +432,6 @@ feature -- display
 		do
 			Result := implementation[coord.x, coord.y]
 		end
-
-
 
 feature -- out
 

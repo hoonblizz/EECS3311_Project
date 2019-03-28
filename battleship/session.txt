@@ -5,3 +5,9 @@ redo
 undo
 fire([C, 4])
 undo
+redo
+bomb([B, 3],[B, 4])
+undo
+redo
+fire([C, 3])
+undo

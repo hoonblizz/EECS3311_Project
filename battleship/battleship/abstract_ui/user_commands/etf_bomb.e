@@ -1,5 +1,9 @@
 note
-	description: ""
+	description: "[
+	For ETF_BOMB, clearing message is done in mark_bomb (right BEFORE execution command)in BOARD
+	and 'set_msg_command_from_board' in MODEL which is used in
+	ETF_BOMB AFTER execution.
+	]"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -81,11 +85,14 @@ feature -- command
 				model.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else
 
+				model.clear_msg_error_reference		-- clear '(= stateX)' message
+
 				print("%NBOMB OP message BEFORE: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
 
 				model.board.history.extend_history (op)
 				op.execute
 
+				model.update_stateNum_ref(model.numberofcommand + 1)	-- set number that will be assigned after all code
 
 				model.set_msg_error(model.board.gamedata.err_ok)
 				model.set_msg_command_from_board	-- get messages from board and display
@@ -99,7 +106,12 @@ feature -- command
 				if model.board.gameover then
 					-- transfer data to model. Some are done when debig_test or new_game
 					model.update_current_total_score
+					model.board.history.remove_all	-- clear all history to stop undo redo
 				end
+
+
+				model.board.history.display_all	-- just for testing
+
 
 			end
 

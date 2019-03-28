@@ -190,6 +190,8 @@ feature -- update values
 		do current_ships := ships end
 	update_score(score: INTEGER)
 		do current_score := score end
+	update_total_score(score: INTEGER)
+		do current_total_score := score end
 
 
 feature --query
