@@ -53,6 +53,7 @@ feature -- command
 			coord1, coord2: COORD
 			shipSize1, shipSize2: INTEGER	-- sunken ships size
     	do
+
     		x1 := coordinate1.row.as_integer_32
 			y1 := coordinate1.column.as_integer_32
 			x2 := coordinate2.row.as_integer_32
@@ -60,46 +61,51 @@ feature -- command
 
 			create coord1.make (x1, y1)
 			create coord2.make (x2, y2)
-			create op.make (coord1, coord2)
+
 
 			-- Start checking error of new coord before execute
 			if not model.board.started then
 
-				model.set_msg_error(model.board.gamedata.err_game_not_started)
-				model.set_msg_command (model.board.gamedata.msg_start_new)
+				model.board.message.set_msg_error(model.board.gamedata.err_game_not_started)
+				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 			elseif model.board.check_invalid_coord (coord1) or model.board.check_invalid_coord (coord2) then
 
-				model.set_msg_error(model.board.gamedata.err_invalid_coord)
-				model.set_msg_command (model.board.gamedata.msg_keep_fire)
+				model.board.message.set_msg_error(model.board.gamedata.err_invalid_coord)
+				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_not_adjacent(coord1, coord2) then
 
-				model.set_msg_error(model.board.gamedata.err_adjacent_coord)
-				model.set_msg_command (model.board.gamedata.msg_keep_fire)
+				model.board.message.set_msg_error(model.board.gamedata.err_adjacent_coord)
+				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif model.board.check_already_fired (coord1) or model.board.check_already_fired (coord2) then
 
-				model.set_msg_error(model.board.gamedata.err_already_fired_coord)
-				model.set_msg_command (model.board.gamedata.msg_keep_fire)
+				model.board.message.set_msg_error(model.board.gamedata.err_already_fired_coord)
+				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_no_bombs then
 
-				model.set_msg_error(model.board.gamedata.err_no_bomb)
-				model.set_msg_command (model.board.gamedata.msg_keep_fire)
+				model.board.message.set_msg_error(model.board.gamedata.err_no_bomb)
+				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else
 
-				model.clear_msg_error_reference		-- clear '(= stateX)' message
+				model.board.update_statenum (model.numberOfCommand)
+
+				create op.make (coord1, coord2)
+
+				model.board.message.clear_msg_error_reference		-- clear '(= stateX)' message
 
 				print("%NBOMB OP message BEFORE: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
 
 				model.board.history.extend_history (op)
 				op.execute
 
-				model.update_stateNum_ref(model.numberofcommand + 1)	-- set number that will be assigned after all code
+				--model.board.update_stateNum_ref(model.numberofcommand + 1)	-- set number that will be assigned after all code
+				--op.set_old_stateNum(model.numberofcommand)
 
-				model.set_msg_error(model.board.gamedata.err_ok)
-				model.set_msg_command_from_board	-- get messages from board and display
+				model.board.message.set_msg_error(model.board.gamedata.err_ok)
+
 				-- set messages to 'op' for undo, redo  execute
-				op.set_msg_error(model.get_msg_error)
-				op.set_msg_command(model.get_msg_command)
-				op.set_statenum (model.numberofcommand + 1)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1)	-- for redo
 				print("%NBOMB OP message AFTER: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
 
 				-- check if game is over.
@@ -109,7 +115,7 @@ feature -- command
 					model.board.history.remove_all	-- clear all history to stop undo redo
 				end
 
-
+				print("%N HISTORY AFTER - BOMB")
 				model.board.history.display_all	-- just for testing
 
 

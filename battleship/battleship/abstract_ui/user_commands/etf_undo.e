@@ -23,9 +23,12 @@ feature -- command
 	undo
 		local
 			err_ref: STRING	-- for undo redo
+			stateNum: INTEGER
+			msgError, msgCommand: STRING
+			op_name: STRING
     	do
 
-			if model.board.history.after then
+			if model.board.history.after then		-- no valid cursor on right
 				model.board.history.back
 			end
 
@@ -36,34 +39,67 @@ feature -- command
 				-- For ETF_FIRE, clearing message is done in mark_fire (right BEFORE execution command)in BOARD
 				--				and 'set_msg_command_from_board' in MODEL which is used in
 				--				ETF_FIRE AFTER execution.
-				model.clear_msg_command
-				model.board.clear_msg_command
+				model.board.message.clear_msg_command
 
-				-- Get messages from HISTORY and stack to message board
-				err_ref := msg_reference_format(model.board.history.item.get_old_stateNum)
-				model.set_msg_error_reference (err_ref)
-				model.set_msg_error (model.board.history.item.get_old_msg_error)
-				model.set_msg_command (model.board.history.item.get_old_msg_command)
-				print("%NUNDO ["+ model.board.history.item.get_op_name.out +"] messages: " + model.board.history.item.get_old_stateNum.out + ": " + model.board.history.item.get_old_msg_error.out + " -> " + model.board.history.item.get_old_msg_command.out)
 
-				model.board.history.display_all	-- just for testing
+				-- Copy messages Before BACK.
+				-- 	In case, after back, it's empty.
+				op_name := model.board.history.item.get_op_name
+				stateNum := model.board.history.item.get_statenum
+				msgError := model.board.history.item.get_msg_error
+				msgCommand := model.board.history.item.get_msg_command
 
 				model.board.history.back
+
+				if model.board.history.on_item then
+					-- Back, then item exists. Take this item.
+					op_name := model.board.history.item.get_op_name
+					stateNum := model.board.history.item.get_statenum
+					msgError := model.board.history.item.get_msg_error
+					msgCommand := model.board.history.item.get_msg_command
+
+					err_ref := msg_reference_format(stateNum)
+					model.board.message.set_msg_error_reference (err_ref)
+					model.board.message.set_msg_error (msgError)
+					model.board.message.set_msg_command (msgCommand)
+
+				else
+					print("%NAfter back, on_item is not valid.......!!!")
+
+					-- clear messages before display
+					model.board.message.clear_msg_command
+
+					model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_undo)
+
+					if not model.board.started then
+						model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
+					elseif model.board.check_fire_happened then
+						model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
+					else
+						model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
+					end
+
+				end
+
+				print("%NUNDO ["+ op_name.out +"] messages: " + stateNum.out + ": " + msgError.out + " -> " + msgCommand.out)
+
+
+				print("%N HISTORY AFTER - UNDO")
+				model.board.history.display_all	-- just for testing
 
 			else
 
 				-- clear messages before display
-				model.clear_msg_command
-				model.board.clear_msg_command
+				model.board.message.clear_msg_command
 
-				model.set_msg_error(model.board.gamedata.err_nothing_to_undo)
+				model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_undo)
 
 				if not model.board.started then
-					model.set_msg_command (model.board.gamedata.msg_start_new)
+					model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 				elseif model.board.check_fire_happened then
-					model.set_msg_command (model.board.gamedata.msg_keep_fire)
+					model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 				else
-					model.set_msg_command (model.board.gamedata.msg_fire_away)
+					model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
 				end
 
 			end

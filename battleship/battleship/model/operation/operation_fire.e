@@ -16,17 +16,14 @@ feature {NONE} -- constructor
 
 	make(a_new_position: COORD)
 		do
-			old_position := board.coord_fire
+			--old_position := board.coord_fire
 			position := a_new_position
-			old_msg_error := model.get_msg_error
-			old_msg_command := model.get_msg_command
-			old_stateNum := model.numberOfCommand_ref
 
-			msg_error := model.get_msg_error
-			msg_command := model.get_msg_command
-			stateNum := model.numberofcommand
+			msg_error := board.message.get_msg_error
+			msg_command := board.message.get_msg_command
+			stateNum := board.numberofcommand
 
-			print("%NFIRE OP make: state "+ old_stateNum.out + " " + old_msg_error.out + " -> " + old_msg_command.out)
+			print("%NFIRE OP make: state "+ stateNum.out + " " + msg_error.out + " -> " + msg_command.out)
 
 			-- in ETF_FIRE, values are stored once again BEFORE execute
 			old_shots := board.gamedata.current_fire
@@ -38,12 +35,9 @@ feature {NONE} -- constructor
 
 feature
 	op_name: STRING = "fire"
-	old_position: COORD
+	--old_position: COORD
 	position: COORD
 
-	old_msg_error: STRING
-	old_msg_command: STRING
-	old_stateNum: INTEGER
 	msg_error: STRING
 	msg_command: STRING
 	stateNum: INTEGER
@@ -64,14 +58,6 @@ feature -- query
 	set_stateNum(num: INTEGER)
 		do stateNum := num end
 
-	get_old_msg_error: STRING
-		do Result := old_msg_error end
-
-	get_old_msg_command: STRING
-		do Result := old_msg_command end
-
-	get_old_stateNum: INTEGER
-		do Result := old_stateNum end
 
 	get_msg_error: STRING
 		do Result := msg_error end

@@ -16,24 +16,23 @@ create
 feature -- command
 	give_up
 		do
+		
 
 			if not model.board.started then
 
 				-- clear all previous messages
-				model.clear_msg_command
-				model.board.clear_msg_command
-				
-				model.set_msg_error(model.board.gamedata.err_game_not_started)
-				model.set_msg_command (model.board.gamedata.msg_start_new)
+				model.board.message.clear_msg_command
+
+				model.board.message.set_msg_error(model.board.gamedata.err_game_not_started)
+				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 			else
 				model.board.set_gameover
 
 				-- clear all previous messages
-				model.clear_msg_command
-				model.board.clear_msg_command
+				model.board.message.clear_msg_command
 
-				model.set_msg_error(model.board.gamedata.err_ok)
-				model.set_msg_command (model.board.gamedata.err_gave_up)
+				model.board.message.set_msg_error(model.board.gamedata.err_ok)
+				model.board.message.set_msg_command (model.board.gamedata.err_gave_up)
 
 				-- check if game is over.
 				if model.board.gameover then

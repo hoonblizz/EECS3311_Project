@@ -57,9 +57,17 @@ feature -- comands
 			-- remove all operations to the right of the current
 			-- cursor in history, then extend with `a_op'
 		do
+			--print("%NExtending...")
+			--display_cursor_stateNum
+
+			--history.start
+			--print("%NAfter start: ")
+			--display_cursor_stateNum
+
 			remove_right
 			history.extend(a_op)
 			history.finish
+
 		ensure
 			history[history.count] = a_op
 		end
@@ -74,6 +82,7 @@ feature -- comands
 				until
 					history.after
 				loop
+					print("%NRemoving....")
 					history.remove
 				end
 			end
@@ -92,6 +101,9 @@ feature -- comands
 			not after
 		do
 			history.forth
+			print("%NForwarding....")
+			display_cursor_stateNum
+
 		end
 
 	back
@@ -99,23 +111,33 @@ feature -- comands
 			not before
 		do
 			history.back
+			print("%NBacking....")
+			display_cursor_stateNum
 		end
+
 
 	display_all		-- only for testing. See all contents
 		do
 			print("%N------------")
-			print("%N   HISTORY")
+			print("%N   HISTORY: ")
+			display_cursor_stateNum
 			across history as el loop
-				print("%N*****OP Name: " + el.item.get_op_name.out)
-				print("%NOLD state: " + el.item.get_old_statenum.out)
-				print("%NOLD error: " + el.item.get_old_msg_error.out)
-				print("%NOLD msg: " + el.item.get_old_msg_command.out)
-				print("%Nstate: " + el.item.get_statenum.out)
-				print("%Nerror: " + el.item.get_msg_error.out)
-				print("%Nmsg: " + el.item.get_msg_command.out)
+				print("%N>>>>>>>>>>>")
+				print("%NOP Name: " + el.item.get_op_name.out)
+				print("%Nstate " + el.item.get_statenum.out)
+				print(" " + el.item.get_msg_error.out)
+				print(" -> " + el.item.get_msg_command.out)
 			end
-			print("%N------------")
+			print("%N------------%N")
 		end
 
+	display_cursor_stateNum
+		do
+			if on_item then
+				print("Cursor Pos State: [ " + history.item.get_statenum.out + " ]")
+			else
+				print("Cursor NOT VALID: [First? " + history.isfirst.out + ", Last? " + history.islast.out + "]")
+			end
+		end
 
 end

@@ -22,16 +22,11 @@ feature {NONE} -- Initialization
 		do
 			make_board (4, False)
 			numberOfCommand := 0
-			numberOfCommand_ref := 0		-- only for undo,redo
 
 			current_game := 0
 			current_total_score := 0
 			current_total_score_limit := 0
-			message := ""
-			msg_error := board.gamedata.err_ok
-			msg_command := <<board.gamedata.msg_start_new>>
 
-			msg_error_reference := ""	-- in general, it'm empty. But in undo, redo
 		end
 
 feature -- board
@@ -46,89 +41,8 @@ feature -- board
 
     board: BOARD
 
-feature -- message
-	-- Message has a form of
-	-- number of command(integer), status(OK) or error, command status(could be more than 1)
-	-- ex) state 1 OK -> Fire Away!
-	-- ex) state 11 Game already started -> Keep Firing!
-	-- ex) state 9 OK -> 4x1 and 3x1 ships sunk! Keep Firing!
-	-- ex) state 12 OK -> 2x1 ship sunk! Keep Firing!
-
-	message: STRING
-	msg_error: STRING
-	msg_error_reference: STRING	-- only for undo, redo cases
-	msg_command: ARRAY[STRING	]
-
-	set_msg_error(a_message: STRING)
-		do
-			msg_error := a_message
-		end
-	set_msg_error_reference(a_message: STRING)
-		do
-			msg_error_reference := a_message
-		end
-
-	-- In ETF_FIRE, for error cases, directly call 'set_msg_command'
-	--	but for commands in board, call 'set_msg_command_from_board' to get messages
-	set_msg_command(a_message: STRING)
-		do
-			msg_command.force(a_message, msg_command.count + 1)
-		end
-	set_msg_command_from_board
-		do
-			clear_msg_command -- clear before stack messages from BOARD
-			across board.msg_command as msg loop
-				set_msg_command(msg.item)
-			end
-		end
-
-	get_msg_numOfCmd: STRING
-		do
-			Result := "state " + numberOfCommand.out
-		end
-
-	get_msg_error: STRING
-		do
-			Result := msg_error
-		end
-	get_msg_error_reference: STRING		-- only for undo, redo
-		do
-			Result := msg_error_reference
-		end
-
-	get_msg_command: STRING
-		local
-			temp: STRING
-			i: INTEGER
-		do
-			create temp.make_empty
-			from i := 1
-			until i > msg_command.count
-			loop
-				temp := temp + msg_command[i]
-				if i < msg_command.count then
-					temp := temp + " " -- have a space between except the last one
-				end
-				i := i + 1
-			end
-			Result := temp
-		end
-
-	clear_msg_command
-		do
-			msg_command.make_empty
-		end
-
-	clear_msg_error_reference
-		do msg_error_reference := "" end
-
 feature -- model attributes
 	numberOfCommand : INTEGER
-	-- just for undo, redo. Check OPERATION_FIRE
-	--		only update (set same as numberOfCommand)
-	--	 	when history.extend happened. (when this happens, all rights are removed)
-	--		
-	numberOfCommand_ref: INTEGER
 
 	-- These values don't change when new game started.
 	current_game: INTEGER -- number of game currently running
@@ -140,10 +54,11 @@ feature -- model operations
 			-- Perform update to the model state.
 		do
 			numberOfCommand := numberOfCommand + 1
-		end
-	update_stateNum_ref(val: INTEGER)		-- only for undo,redo message
-		do
-			numberOfCommand_ref := val
+			--board.update_statenum (numberOfCommand) -- for OPERATION_FIRE
+
+			if board.numberofcommand_ref ~ 0 then
+				--board.update_statenum_ref (numberOfCommand)
+			end
 		end
 
 	-- these updates are from 'BOARD.GAMEDATA' to 'MODEL'
@@ -260,7 +175,7 @@ feature -- queries
 	out : STRING
 		do
 
-			create Result.make_from_string ("  " + get_msg_numOfCmd + " " + msg_error_reference + get_msg_error + " -> " + get_msg_command + "%N")
+			create Result.make_from_string ("  " + board.message.get_msg_numOfCmd(numberOfCommand) + " " + board.message.msg_error_reference + board.message.get_msg_error + " -> " + board.message.get_msg_command + "%N")
 
 			-- clear command message when error is OK.
 			--if get_msg_error ~ board.gamedata.err_ok then

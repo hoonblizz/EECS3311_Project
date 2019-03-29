@@ -16,22 +16,8 @@ feature{NONE}
 		once
 			Result := ma.m.board
 		end
-	model : ETF_MODEL
-		local
-			ma: ETF_MODEL_ACCESS
-		once
-			Result := ma.m
-		end
 
 feature -- deferred query
-	get_old_msg_error: STRING
-		deferred end
-
-	get_old_msg_command: STRING
-		deferred end
-
-	get_old_stateNum: INTEGER
-		deferred end
 
 	get_msg_error: STRING
 		deferred end

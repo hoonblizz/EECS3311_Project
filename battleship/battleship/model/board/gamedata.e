@@ -26,6 +26,7 @@ feature
 
 			create gen_ship.make_empty
 			generated_ships_temp := gen_ship.generate_ships (debug_mode, current_board_size, current_ships_limit)
+			
 			generated_ships := reform_generated_ships(generated_ships_temp)
 			--create generated_ships_index.make (0)
 		end

@@ -18,10 +18,13 @@ feature -- command
 		require else
 			new_game_precond(level_str)
 		local
+			op: OPERATION_NEW_GAME
 			level_int: INTEGER
 			coord: COORD
 			gamedata: GAMEDATA
     	do
+
+
     		--create gamedata
 			-- perform some update on the model state
 			-- setup board
@@ -30,6 +33,9 @@ feature -- command
 				level_int := level_str.as_integer_32
 				model.make_board (level_int, False)
 				model.board.set_started
+
+				create op.make		-- History is created in make_board
+				model.board.history.extend_history (op)
 
 				-- update current game, total score, total score limit
 				-- 	in both 'model', 'model.board.gamedata' level.
@@ -49,23 +55,32 @@ feature -- command
 				create coord.make (level_int, level_int)
 
 				-- clear messages before display
-				model.clear_msg_command
-				model.board.clear_msg_command
+				model.board.message.clear_msg_command
+				model.board.message.clear_msg_command
 
-				model.set_msg_error (model.board.gamedata.err_ok)
-				model.set_msg_command (model.board.gamedata.msg_fire_away)
+				model.board.message.set_msg_error (model.board.gamedata.err_ok)
+				model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
+
+				-- set messages for history (undo, redo)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
+
+				print("%N HISTORY AFTER - DEBUG_TEST")
+				model.board.history.display_all	-- just for testing
+				
 			else
-				model.set_msg_error(model.board.gamedata.err_game_already_started)
+				model.board.message.set_msg_error(model.board.gamedata.err_game_already_started)
 
 				-- game start command and no fire is made yet => 'Fire Away!'
 				--	game start command in middle of battle => 'Keep Firing!'
 				if model.board.check_fire_happened then
-					model.set_msg_command (model.board.gamedata.msg_keep_fire)
+					model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 				else
-					model.set_msg_command (model.board.gamedata.msg_fire_away)
+					model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
 				end
 			end
-			
+
 			model.default_update
 			etf_cmd_container.on_change.notify ([Current])
     	end

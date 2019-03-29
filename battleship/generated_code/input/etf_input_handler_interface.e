@@ -166,6 +166,30 @@ feature -- parsing
 				else
 					Result := dummy_cmd
 				end
+			elseif cmd_name ~ "custom_setup" then
+				if
+					attached {ETF_INT_ARG} args[1] as dimension and then 4 <= dimension.value and then dimension.value <= 12 and then
+					attached {ETF_INT_ARG} args[2] as ships and then 1 <= ships.value and then ships.value <= 7 and then
+					attached {ETF_INT_ARG} args[3] as max_shots and then 1 <= max_shots.value and then max_shots.value <= 144 and then
+					attached {ETF_INT_ARG} args[4] as num_bombs and then 1 <= num_bombs.value and then num_bombs.value <= 7
+				then
+
+					create {ETF_CUSTOM_SETUP} Result.make("custom_setup", [dimension.value, ships.value, max_shots.value, num_bombs.value], abstract_ui)
+				else
+					 Result := dummy_cmd
+				end
+			elseif cmd_name ~ "custom_setup_test" then
+				if
+					(attached {ETF_INT_ARG} args[1] as dimension) and then 4 <= dimension.value and then dimension.value <= 12 and then
+					(attached {ETF_INT_ARG} args[2] as ships) and then 1 <= ships.value and then ships.value <= 7 and then
+					(attached {ETF_INT_ARG} args[3] as max_shots) and then 1 <= max_shots.value and then max_shots.value <= 144 and then
+					(attached {ETF_INT_ARG} args[4] as num_bombs) and then 1 <= num_bombs.value and then num_bombs.value <= 7
+				then
+
+					create {ETF_CUSTOM_SETUP_TEST} Result.make("custom_setup_test", [dimension.value, ships.value, max_shots.value, num_bombs.value], abstract_ui)
+				else
+					 Result := dummy_cmd
+				end
 			else
 				 Result := dummy_cmd
 			end
@@ -253,6 +277,39 @@ feature -- parsing
 					Result.append (evt_out_str + " does not conform to declaration " +
 							"give_up")
 				end
+			elseif cmd_name ~ "custom_setup" then
+				if
+					NOT( ( args.count = 4 ) AND THEN
+						(attached {ETF_INT_ARG} args[1] as dimension) and then 4 <= dimension.value and then dimension.value <= 12 and then
+						(attached {ETF_INT_ARG} args[2] as ships) and then 1 <= ships.value and then ships.value <= 7 and then
+						(attached {ETF_INT_ARG} args[3] as max_shots) and then 1 <= max_shots.value and then max_shots.value <= 144 and then
+						(attached {ETF_INT_ARG} args[4] as num_bombs) and then 1 <= num_bombs.value and then num_bombs.value <= 7)
+
+				then
+					if NOT Result.is_empty then
+						Result.append ("%N")
+					end
+					Result.append (evt_out_str + " does not conform to declaration (arg: " + args.count.out + ")" +
+							"custom_setup(dimension: INTEGER_64={4..12} ; ships: INTEGER_64={1..7}; max_shots: INTEGER_64={1..144}; num_bombs: INTEGER_64={1..7})")
+
+				end
+
+			elseif cmd_name ~ "custom_setup_test" then
+				if
+					NOT( ( args.count = 4 ) AND THEN
+						(attached {ETF_INT_ARG} args[1] as dimension) and then 4 <= dimension.value and then dimension.value <= 12 and then
+						(attached {ETF_INT_ARG} args[2] as ships) and then 1 <= ships.value and then ships.value <= 7 and then
+						(attached {ETF_INT_ARG} args[3] as max_shots) and then 1 <= max_shots.value and then max_shots.value <= 144 and then
+						(attached {ETF_INT_ARG} args[4] as num_bombs) and then 1 <= num_bombs.value and then num_bombs.value <= 7)
+				then
+					if NOT Result.is_empty then
+						Result.append ("%N")
+					end
+					Result.append (evt_out_str + " does not conform to declaration " +
+							"custom_setup_test(dimension: INTEGER={4..12} ; ships: INTEGER={1..7}; max_shots: INTEGER={1..144}; num_bombs: INTEGER={1..7})")
+
+				end
+
 			else
 				if NOT Result.is_empty then
 					Result.append ("%N")
