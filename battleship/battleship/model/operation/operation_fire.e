@@ -76,6 +76,8 @@ feature -- commands
 	-- At this point, assume all error cases are handled. (in ETF)
 	execute
 		do
+			print("%NFIRE OP called. Check board: " + board.gamedata.current_board_size.out)
+			print(" => Pos: [" + position.x.out + "," + position.y.out + "]")
 			old_implementation := board.implementation[position.x, position.y]
 			board.mark_fire (position) -- going to mark 'X' or 'O'
 			new_implementation := board.implementation[position.x, position.y]

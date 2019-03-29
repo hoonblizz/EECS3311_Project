@@ -7,13 +7,15 @@ note
 deferred class
 	OPERATION
 
-feature{NONE}
+feature {NONE}
 
 	board: BOARD
-			-- access board via singleton
+			-- Don't need singleton. We need this to be updated
+			--	because when game is over, and create a new game,
+			--	if this is singleton, it doesn't update
 		local
 			ma: ETF_MODEL_ACCESS
-		once
+		do --once
 			Result := ma.m.board
 		end
 

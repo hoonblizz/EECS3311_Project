@@ -1,1 +1,8 @@
-custom_setup(4,2,2,2)
+debug_test(easy)
+bomb([B,4],[C,4])
+fire([C, 3])
+undo
+redo
+debug_test(medium)
+fire([A,5])
+fire([E,5])

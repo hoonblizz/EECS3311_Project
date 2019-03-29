@@ -21,11 +21,8 @@ feature -- command
 			op: OPERATION_NEW_GAME
 			level_int: INTEGER
 			coord: COORD
-			gamedata: GAMEDATA
     	do
 
-
-    		--create gamedata
 			-- perform some update on the model state
 			-- setup board
 
@@ -68,7 +65,7 @@ feature -- command
 
 				print("%N HISTORY AFTER - DEBUG_TEST")
 				model.board.history.display_all	-- just for testing
-				
+
 			else
 				model.board.message.set_msg_error(model.board.gamedata.err_game_already_started)
 

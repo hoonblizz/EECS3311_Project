@@ -181,10 +181,11 @@ feature -- query on declarations of event parameters
 			-- custom_setup_test
 			create custom_setup_test_types.make (10)
 			custom_setup_test_types.compare_objects
-			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("GRID_SIZE", create {ETF_INTERVAL_PARAM}.make(4, 12)), "dimension")
-			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("NUMBER_OF_SHIPS", create {ETF_INTERVAL_PARAM}.make(1, 7)), "ships")
-			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("MAX_SHOTS", create {ETF_INTERVAL_PARAM}.make(1, 144)), "max_shots")
-			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("NUMBER_OF_BOMBS", create {ETF_INTERVAL_PARAM}.make(1, 7)), "num_bombs")
+			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("GRID_SIZE", create {ETF_INTERVAL_PARAM}.make (4, 12)), "dimension")
+			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("NUMBER_OF_SHIPS", create {ETF_INTERVAL_PARAM}.make (1, 7)), "ships")
+			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("MAX_SHOTS", create {ETF_INTERVAL_PARAM}.make (1, 144)), "max_shots")
+			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("NUMBER_OF_BOMBS", create {ETF_INTERVAL_PARAM}.make (1, 7)), "num_bombs")
+
 			Result.extend (custom_setup_test_types, "custom_setup_test")
 
 		end
@@ -265,6 +266,7 @@ feature -- query on declarations of event parameters
 			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("NUMBER_OF_SHIPS", create {ETF_INTERVAL_PARAM}.make(1, 7)))
 			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("MAX_SHOTS", create {ETF_INTERVAL_PARAM}.make(1, 144)))
 			custom_setup_test_types.extend (create {ETF_NAMED_PARAM_TYPE}.make("NUMBER_OF_BOMBS", create {ETF_INTERVAL_PARAM}.make(1, 7)))
+
 			Result.extend (custom_setup_test_types, "custom_setup_test")
 
 

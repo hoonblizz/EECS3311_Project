@@ -35,6 +35,7 @@ feature -- command
 			shipSize: INTEGER
     	do
 
+			print("%NFIRE called. Check model size: " + model.board.gamedata.current_board_size.out)
 			l_x := coordinate.row.as_integer_32
 			l_y := coordinate.column.as_integer_32
 
@@ -88,6 +89,7 @@ feature -- command
 					-- transfer data to model. Some are done when debig_test or new_game
 					model.update_current_total_score
 					model.board.history.remove_all	-- clear all history to stop undo redo
+
 				end
 
 				print("%N HISTORY AFTER - FIRE")
