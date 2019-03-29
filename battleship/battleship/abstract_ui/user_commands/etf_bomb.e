@@ -51,7 +51,6 @@ feature -- command
 			op: OPERATION_BOMB
 			x1,y1,x2,y2: INTEGER
 			coord1, coord2: COORD
-			shipSize1, shipSize2: INTEGER	-- sunken ships size
     	do
 
     		x1 := coordinate1.row.as_integer_32
@@ -65,23 +64,23 @@ feature -- command
 
 			-- Start checking error of new coord before execute
 			if not model.board.started then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_game_not_started)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 			elseif model.board.check_invalid_coord (coord1) or model.board.check_invalid_coord (coord2) then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_invalid_coord)
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_not_adjacent(coord1, coord2) then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_adjacent_coord)
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif model.board.check_already_fired (coord1) or model.board.check_already_fired (coord2) then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_already_fired_coord)
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_no_bombs then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_no_bomb)
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else

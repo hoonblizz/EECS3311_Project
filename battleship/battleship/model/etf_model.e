@@ -20,12 +20,20 @@ feature {NONE} -- Initialization
 	make
 			-- Initialization for `Current'.
 		do
-			make_board (4, False)
-			numberOfCommand := 0
 
+			-- When make model, init random ship generator
+			create gen_ship.make_empty
+			create generated_ships_temp.make (20)
+			create generated_ships.make (20)
+
+			make_board (4, False)
+
+			numberOfCommand := 0
 			current_game := 0
 			current_total_score := 0
 			current_total_score_limit := 0
+
+			current_game_mode := ""
 
 		end
 
@@ -35,11 +43,42 @@ feature -- board
     	-- 13, 14, 15, 16 (easy, medium, hard, advanced)
     	--require
     	--	12 < level and level < 17
+    	local
+    		gamedata: GAMEDATA
     	do
-    		create board.make(level, debug_mode)
+			create gamedata.make (level, debug_mode)
+
+			-- Generate ships AFTER gamedata creation
+			generated_ships_temp := gen_ship.generate_ships (debug_mode, gamedata.current_board_size, gamedata.current_ships_limit)
+			generated_ships := reform_generated_ships(generated_ships_temp)
+
+    		create board.make(level, debug_mode, generated_ships)
     	end
 
     board: BOARD
+
+feature -- Ship generator
+	gen_ship: GEN_SHIP		-- use to generate ships in random
+	generated_ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
+	generated_ships_temp: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
+	-- Why need? because generated_ship is not exactly matching in debug_test mode
+	-- when vertical (dir is True) add 1 to x (row)
+	-- when not vertical (dir is false) add 1 to y (col)
+	reform_generated_ships(ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]): ARRAYED_LIST[TUPLE[INTEGER, INTEGER, INTEGER, BOOLEAN]]
+		do
+			create Result.make (20)
+			across ships as ship
+			loop
+
+				if ship.item.dir then
+					Result.extend([ship.item.size, ship.item.row + 1, ship.item.col, ship.item.dir])
+				else
+					Result.extend([ship.item.size, ship.item.row, ship.item.col + 1, ship.item.dir])
+				end
+			end
+
+
+		end
 
 feature -- model attributes
 	numberOfCommand : INTEGER
@@ -47,6 +86,7 @@ feature -- model attributes
 	-- These values don't change when new game started.
 	current_game: INTEGER -- number of game currently running
 	current_total_score, current_total_score_limit: INTEGER
+	current_game_mode: STRING	-- For when different mode started, reset model data'debug_test', 'new_game', 'custom_setup', 'custom_setup_test'
 
 
 feature -- model operations
@@ -78,10 +118,23 @@ feature -- model operations
 			current_total_score_limit := current_total_score_limit + board.gamedata.current_score_limit
 		end
 
+	set_game_mode(mode: STRING)
+		do
+			current_game_mode := mode
+		end
+
 	reset
 			-- Reset model state.
 		do
 			make
+		end
+
+	reset_values
+		do
+			--numberOfCommand := 0		-- this should be continuous
+			current_game := 0
+			current_total_score := 0
+			current_total_score_limit := 0
 		end
 
 feature -- queries
@@ -89,7 +142,6 @@ feature -- queries
 	score_out: STRING	-- for bottom of board. Scores to display
 		local
 			i: INTEGER
-			sunk: BOOLEAN
 			coord: COORD
 			tempRow,tempCol: INTEGER
 		do
@@ -175,16 +227,11 @@ feature -- queries
 	out : STRING
 		do
 
-			create Result.make_from_string ("  " + board.message.get_msg_numOfCmd(numberOfCommand) + " " + board.message.msg_error_reference + board.message.get_msg_error + " -> " + board.message.get_msg_command + "%N")
-
-			-- clear command message when error is OK.
-			--if get_msg_error ~ board.gamedata.err_ok then
-				--clear_msg_command
-				--board.clear_msg_command
-			--end
+			create Result.make_from_string ("  " + board.message.get_msg_numOfCmd(numberOfCommand) + " " + board.message.msg_error_reference + board.message.get_msg_error + " -> " + board.message.get_msg_command)
 
 			Result.append (board.out)
-			Result := Result + score_out
+			Result.append (score_out)
+
 		end
 
 end

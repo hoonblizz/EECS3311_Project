@@ -21,12 +21,19 @@ feature -- command
 			op: OPERATION_DEBUG_TEST
 			level_int: INTEGER
 			coord: COORD
-			gamedata: GAMEDATA
+			mode: STRING
     	do
 
 			-- perform some update on the model state
 			if not model.board.started then
 				level_int := level_str.as_integer_32
+
+				-- If it's not first time running and different mode
+				mode := model.board.gamedata.get_game_mode(False, True)
+				if model.current_game > 1 and not (model.current_game_mode ~ mode) then
+					model.reset_values -- Different mode. Reset model values.
+				end
+				model.set_game_mode(mode)
 
 				model.make_board (level_int, True)
 				model.board.set_started
@@ -45,15 +52,16 @@ feature -- command
 				model.update_current_game
 				model.update_current_total_score_limit
 				--model.update_current_total_score -- done when gameover
+
 				-- MODEL to GAMEDATA
 				model.board.gamedata.update_current_game(model.board.gamedata.current_game)
 				model.board.gamedata.update_current_total_score(model.current_total_score)
 				model.board.gamedata.update_current_total_score_limit(model.current_total_score_limit)
 
+
 				create coord.make (level_int, level_int)
 
 				-- clear messages before display
-				model.board.message.clear_msg_command
 				model.board.message.clear_msg_command
 
 				model.board.message.set_msg_error (model.board.gamedata.err_ok)
@@ -68,6 +76,9 @@ feature -- command
 				model.board.history.display_all	-- just for testing
 
 			else
+
+				model.board.message.clear_msg_command
+
 				model.board.message.set_msg_error(model.board.gamedata.err_game_already_started)
 
 				-- game start command and no fire is made yet => 'Fire Away!'

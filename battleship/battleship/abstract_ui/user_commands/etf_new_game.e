@@ -21,6 +21,7 @@ feature -- command
 			op: OPERATION_NEW_GAME
 			level_int: INTEGER
 			coord: COORD
+			mode: STRING
     	do
 
 			-- perform some update on the model state
@@ -28,6 +29,14 @@ feature -- command
 
 			if not model.board.started then
 				level_int := level_str.as_integer_32
+
+				-- If it's not first time running and different mode
+				mode := model.board.gamedata.get_game_mode(False, False)
+				if model.current_game > 1 and not (model.current_game_mode ~ model.board.gamedata.get_game_mode(False, False)) then
+					model.reset_values -- Different mode. Reset model values.
+				end
+				model.set_game_mode(mode)
+
 				model.make_board (level_int, False)
 				model.board.set_started
 
@@ -67,6 +76,9 @@ feature -- command
 				model.board.history.display_all	-- just for testing
 
 			else
+
+				model.board.message.clear_msg_command
+
 				model.board.message.set_msg_error(model.board.gamedata.err_game_already_started)
 
 				-- game start command and no fire is made yet => 'Fire Away!'

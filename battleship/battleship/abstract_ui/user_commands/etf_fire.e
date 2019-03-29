@@ -32,7 +32,6 @@ feature -- command
 			op: OPERATION_FIRE
 			l_x,l_y: INTEGER
 			coord: COORD
-			shipSize: INTEGER
     	do
 
 			print("%NFIRE called. Check model size: " + model.board.gamedata.current_board_size.out)
@@ -43,19 +42,19 @@ feature -- command
 
 			-- Start checking error of new coord before execute
 			if not model.board.started then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_game_not_started)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 			elseif model.board.check_invalid_coord (coord) then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_invalid_coord)
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif model.board.check_already_fired (coord) then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_already_fired_coord)
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_no_shots then
-
+				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_no_shots)
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else

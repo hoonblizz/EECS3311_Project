@@ -1,5 +1,4 @@
   state 0 OK -> Start a new game
-
 ->debug_test(easy)
   state 1 OK -> Fire Away!
      1  2  3  4
@@ -214,83 +213,83 @@
   state 16 OK -> Fire Away!
      1  2  3  4
   A  _  _  _  _
-  B  _  _  _  v
-  C  _  _  h  v
-  D  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
   Current Game (debug): 2
   Shots: 0/8
   Bombs: 0/2
   Score: 0/3 (Total: 3/6)
   Ships: 0/2
-    2x1: [B, 4]->v;[C, 4]->v
-    1x1: [C, 3]->h
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
 ->undo
   state 17 Nothing to undo -> Fire Away!
      1  2  3  4
   A  _  _  _  _
-  B  _  _  _  v
-  C  _  _  h  v
-  D  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
   Current Game (debug): 2
   Shots: 0/8
   Bombs: 0/2
   Score: 0/3 (Total: 3/6)
   Ships: 0/2
-    2x1: [B, 4]->v;[C, 4]->v
-    1x1: [C, 3]->h
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
 ->redo
   state 18 Nothing to redo -> Fire Away!
      1  2  3  4
   A  _  _  _  _
-  B  _  _  _  v
-  C  _  _  h  v
-  D  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
   Current Game (debug): 2
   Shots: 0/8
   Bombs: 0/2
   Score: 0/3 (Total: 3/6)
   Ships: 0/2
-    2x1: [B, 4]->v;[C, 4]->v
-    1x1: [C, 3]->h
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
 ->give_up
   state 19 OK -> You gave up!
      1  2  3  4
   A  _  _  _  _
-  B  _  _  _  v
-  C  _  _  h  v
-  D  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
   Current Game (debug): 2
   Shots: 0/8
   Bombs: 0/2
   Score: 0/3 (Total: 3/6)
   Ships: 0/2
-    2x1: [B, 4]->v;[C, 4]->v
-    1x1: [C, 3]->h
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
 ->undo
   state 20 Nothing to undo -> Start a new game
      1  2  3  4
   A  _  _  _  _
-  B  _  _  _  v
-  C  _  _  h  v
-  D  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
   Current Game (debug): 2
   Shots: 0/8
   Bombs: 0/2
   Score: 0/3 (Total: 3/6)
   Ships: 0/2
-    2x1: [B, 4]->v;[C, 4]->v
-    1x1: [C, 3]->h
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v
 ->redo
   state 21 Nothing to redo -> Start a new game
      1  2  3  4
   A  _  _  _  _
-  B  _  _  _  v
-  C  _  _  h  v
-  D  _  _  _  _
+  B  _  _  _  _
+  C  _  v  _  _
+  D  _  v  _  v
   Current Game (debug): 2
   Shots: 0/8
   Bombs: 0/2
   Score: 0/3 (Total: 3/6)
   Ships: 0/2
-    2x1: [B, 4]->v;[C, 4]->v
-    1x1: [C, 3]->h
+    2x1: [C, 2]->v;[D, 2]->v
+    1x1: [D, 4]->v

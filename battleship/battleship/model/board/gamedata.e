@@ -24,18 +24,16 @@ feature
 			set_game_default_value(level)
 			row_chars := <<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>
 
-			create gen_ship.make_empty
-			generated_ships_temp := gen_ship.generate_ships (debug_mode, current_board_size, current_ships_limit)
-			
-			generated_ships := reform_generated_ships(generated_ships_temp)
-			--create generated_ships_index.make (0)
+			create generated_ships.make (20)
+
 		end
 
 feature --attributes
 
-	gen_ship: GEN_SHIP		-- use to generate ships in random
+	--gen_ship: GEN_SHIP		-- use to generate ships in random
 	-- if direction is true, vertical
-	generated_ships_temp: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
+	--generated_ships_temp: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
+
 	generated_ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
 
 	-- 13, 14, 15, 16 (easy, medium, hard, advanced)
@@ -49,6 +47,11 @@ feature --attributes
 	current_fire_limit, current_bomb_limit, current_score_limit, current_total_score_limit, current_ships_limit: INTEGER
 
 	-- default values
+	game_mode_debug_test: STRING = "debug_test"
+	game_mode_new_game: STRING = "new_game"
+	game_mode_custom_setup: STRING = "custom_setup"
+	game_mode_custom_setup_test: STRING = "custom_setup_test"
+
 	easy_level_str: STRING = "easy"
 	easy_level_int: INTEGER = 13
 	easy_board_size: INTEGER = 4		-- easy game attributes
@@ -81,6 +84,7 @@ feature --attributes
 	advanced_score_limit : INTEGER = 28
 	advanced_ships_limit : INTEGER = 7
 
+
 	row_chars: ARRAY[STRING]
 
 	-- Game Messages and Error messages
@@ -90,7 +94,7 @@ feature --attributes
 	msg_hit: STRING = "Hit!"
 	msg_miss: STRING = "Miss!"
 	msg_win: STRING = "You Win!"
-	msg_game_over: STRING = "Game Over"
+	msg_game_over: STRING = "Game Over!"
 
 	msg_ship_sunk(shipSize: INTEGER): STRING
 		do
@@ -235,24 +239,22 @@ feature --query
 			end
 		end
 
-	-- Why need? because generated_ship is not exactly matching in debug_test mode
-	-- when vertical (dir is True) add 1 to x (row)
-	-- when not vertical (dir is false) add 1 to y (col)
-	reform_generated_ships(ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]): ARRAYED_LIST[TUPLE[INTEGER, INTEGER, INTEGER, BOOLEAN]]
+	get_game_mode(customMode: BOOLEAN; debugMode: BOOLEAN): STRING
 		do
-			create Result.make (20)
-			across ships as ship
-			loop
-
-				if ship.item.dir then
-					Result.extend([ship.item.size, ship.item.row + 1, ship.item.col, ship.item.dir])
-				else
-					Result.extend([ship.item.size, ship.item.row, ship.item.col + 1, ship.item.dir])
-				end
+			if customMode and debugMode then
+				Result := game_mode_custom_setup_test
+			elseif customMode and not debugMode then
+				Result := game_mode_custom_setup
+			elseif not customMode and debugMode then
+				Result := game_mode_debug_test
+			elseif not customMode and not debugMode then
+				Result := game_mode_new_game
+			else
+				Result := ""
 			end
-
-
 		end
+
+
 
 feature --command
 	set_game_default_value (level: INTEGER)
@@ -310,6 +312,12 @@ feature --command
 				current_ships_limit := advanced_ships_limit
 
 			end
+		end
+
+	-- properly formed ship locations
+	set_generated_ships(gs: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]])
+		do
+			generated_ships := gs
 		end
 
 	test_ships_generated	-- test random generation of ships

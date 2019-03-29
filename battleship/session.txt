@@ -1,8 +1,7 @@
 debug_test(easy)
-bomb([B,4],[C,4])
-fire([C, 3])
-undo
-redo
+fire([A,4])
+fire([B, 4])
+bomb([C, 4],[D, 4])
+bomb([C, 3],[C, 2])
 debug_test(medium)
-fire([A,5])
-fire([E,5])
+bomb([A, 1],[A, 2])

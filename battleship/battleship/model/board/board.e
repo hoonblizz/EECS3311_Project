@@ -18,7 +18,7 @@ create
 feature {NONE} -- create
 
 	-- level will be 13, 14, 15, 16 (easy, medium, hard, advanced)
-	make(level: INTEGER; debug_mode: BOOLEAN)
+	make(level: INTEGER; debug_mode: BOOLEAN; generated_ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]])
 		local
 			size: INTEGER
 			tempRow, tempCol: INTEGER
@@ -29,13 +29,14 @@ feature {NONE} -- create
 			numberOfCommand :=0
 
 			create gamedata.make(level, debug_mode)
+			gamedata.set_generated_ships (generated_ships)
 
 			size := gamedata.get_board_size (level)
 
 			print("%N***********************")
 			print("%N     Board Create: level: " + level.out + ", size: " + size.out)
 			print("%N***********************%N")
-			
+
 			create implementation.make_filled ('_',size, size)
 
 			-- We now have ships position generated(in game data) and 'implementation'
@@ -67,8 +68,6 @@ feature {OPERATION} -- implementation
 
 
 feature  -- game started
-	--size: INTEGER
-		-- size of board. replacing with gamedata -> current_board_size
 
     started: BOOLEAN
     	-- has the game started?
@@ -435,7 +434,7 @@ feature -- out
 			size: INTEGER
 		do
 			size := gamedata.current_board_size
-			Result := "     "	-- 5 spaces
+			Result := "%N     "	-- 5 spaces
 
 			-- Draw Coord (1, 2, 3, 4 ....)
 			across 1 |..| size as h loop
