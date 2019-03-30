@@ -20,10 +20,7 @@ feature {NONE} -- Initialization
 			etf_cmd_routine := agent custom_setup_test(?,?,?,?)
 			etf_cmd_routine.set_operands (etf_cmd_args)
 			if
-				attached {INTEGER} etf_cmd_args[1] as dimension and then
-				attached {INTEGER} etf_cmd_args[2] as ships and then
-				attached {INTEGER} etf_cmd_args[3] as max_shots and then
-				attached {INTEGER} etf_cmd_args[4] as num_bombs
+				attached {INTEGER_64} etf_cmd_args[1] as dimension and then attached {INTEGER_64} etf_cmd_args[2] as ships and then attached {INTEGER_64} etf_cmd_args[3] as max_shots and then attached {INTEGER_64} etf_cmd_args[4] as num_bombs
 			then
 				out := "custom_setup_test(" + etf_event_argument_out("custom_setup_test", "dimension", dimension)+ "," +
 						 etf_event_argument_out("custom_setup_test", "ships", ships) + "," +
@@ -34,17 +31,10 @@ feature {NONE} -- Initialization
 			end
 		end
 
-feature -- precond
-	custom_setup_test_precond(dimension: INTEGER; ships: INTEGER; max_shots: INTEGER; num_bombs: INTEGER)
-		do
-			--Result := True
-		end
 
 feature -- command
-	custom_setup_test(dimension: INTEGER; ships: INTEGER; max_shots: INTEGER; num_bombs: INTEGER)
-		require
-			--custom_setup_test_precond(dimension, ships, max_shots, num_bombs)
-    	deferred
+	custom_setup_test(dimension: INTEGER_64; ships: INTEGER_64; max_shots: INTEGER_64; num_bombs: INTEGER_64)
+		deferred
     	end
 
 end

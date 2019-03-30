@@ -1,7 +1,33 @@
-debug_test(easy)
-fire([A,4])
-fire([B, 4])
-bomb([C, 4],[D, 4])
-bomb([C, 3],[C, 2])
+undo
+redo
+undo
+redo
+undo
+redo
 debug_test(medium)
-bomb([A, 1],[A, 2])
+give_up
+debug_test(medium)
+undo
+redo
+custom_setup_test(6,3,30,3)
+custom_setup_test(6,1,30,3)
+undo
+undo
+undo
+redo
+redo
+redo
+fire([C,3])
+bomb([D,2],[D,3])
+fire([C,2])
+fire([A,2])
+bomb([C,4],[B,4])
+fire([E,2])
+undo
+redo
+undo
+redo
+give_up
+new_game(easy)
+give_up
+custom_setup_test(6,4,30,3)

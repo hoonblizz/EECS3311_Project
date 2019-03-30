@@ -51,7 +51,7 @@ feature -- command
 				msgCommand := model.board.history.item.get_msg_command
 
 				-- If only stack is 'debug_test' or 'new_game', ignore.
-				if op_name ~ "debug_test" or op_name ~ "new_game" then
+				if (op_name ~ "debug_test" or op_name ~ "new_game") and model.board.history.after then
 
 					print("%N" + op_name.out + ". Pretend nothing to undo...")
 					model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_redo)
@@ -82,6 +82,7 @@ feature -- command
 
 				-- clear messages before display
 				model.board.message.clear_msg_command
+				model.board.message.clear_msg_error_reference
 
 				model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_redo)
 

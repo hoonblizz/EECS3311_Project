@@ -68,6 +68,7 @@ feature -- command
 
 					-- clear messages before display
 					model.board.message.clear_msg_command
+					model.board.message.clear_msg_error_reference
 
 					model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_undo)
 
@@ -77,6 +78,12 @@ feature -- command
 						model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 					else
 						model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
+					end
+
+					-- check if other items still exist. then move forward
+					print("%NCheck history NOT exist on right: " + model.board.history.after.out)
+					if not model.board.history.after then
+						model.board.history.forth
 					end
 
 				end
@@ -91,6 +98,7 @@ feature -- command
 
 				-- clear messages before display
 				model.board.message.clear_msg_command
+				model.board.message.clear_msg_error_reference
 
 				model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_undo)
 

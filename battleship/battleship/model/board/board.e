@@ -18,7 +18,8 @@ create
 feature {NONE} -- create
 
 	-- level will be 13, 14, 15, 16 (easy, medium, hard, advanced)
-	make(level: INTEGER; debug_mode: BOOLEAN; generated_ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]])
+	make(level: INTEGER; custom: BOOLEAN; debug_mode: BOOLEAN; generated_ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]];
+			dimension: INTEGER; ships: INTEGER; max_shots: INTEGER; num_bombs: INTEGER)
 		local
 			size: INTEGER
 			tempRow, tempCol: INTEGER
@@ -28,22 +29,27 @@ feature {NONE} -- create
 			numberOfCommand_ref := 1
 			numberOfCommand :=0
 
-			create gamedata.make(level, debug_mode)
+			create gamedata.make(level, custom, debug_mode, dimension, ships, max_shots, num_bombs)
 			gamedata.set_generated_ships (generated_ships)
 
-			size := gamedata.get_board_size (level)
+			--size := gamedata.get_board_size (level)
+			size := gamedata.current_board_size
 
 			print("%N***********************")
 			print("%N     Board Create: level: " + level.out + ", size: " + size.out)
+			print(" Custom? " + custom.out + ", Debug? " + debug_mode.out)
 			print("%N***********************%N")
 
-			create implementation.make_filled ('_',size, size)
+			create implementation.make_filled ('_', size, size)
 
 			-- We now have ships position generated(in game data) and 'implementation'
 
 			-- if debug mode, mark in the position
 			if debug_mode then
+				print("%NMarking v and h for board...")
 				across gamedata.generated_ships as ship loop
+					print("%NShip [" + ship.item.row.out + ", " + ship.item.col.out + "]")
+					print(" Size: "+ ship.item.size.out +", Vertical? " + ship.item.dir.out)
 					tempRow := ship.item.row
 					tempCol := ship.item.col
 					across 1 |..| ship.item.size as j loop

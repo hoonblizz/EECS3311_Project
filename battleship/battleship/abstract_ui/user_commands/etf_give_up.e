@@ -16,7 +16,6 @@ create
 feature -- command
 	give_up
 		do
-		
 
 			if not model.board.started then
 
@@ -26,6 +25,7 @@ feature -- command
 				model.board.message.set_msg_error(model.board.gamedata.err_game_not_started)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 			else
+
 				model.board.set_gameover
 
 				-- clear all previous messages
@@ -37,8 +37,10 @@ feature -- command
 				-- check if game is over.
 				if model.board.gameover then
 					-- transfer data to model. Some are done when debig_test or new_game
-					model.update_current_total_score
+					-- give_up shouldn't update total_score
+					--model.update_current_total_score
 					model.board.history.remove_all	-- clear all history to stop undo redo
+					model.set_give_up(True) -- used when restart game
 				end
 			end
 

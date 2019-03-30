@@ -21,7 +21,7 @@ feature
 		local
 			gamedata: GAMEDATA
 		do
-			create gamedata.make (level, debug_mode)
+			create gamedata.make (level, False, debug_mode, 0, 0, 0, 0)
 			create msg_command.make_empty
 			msg_error := gamedata.err_ok
 			msg_command := <<gamedata.msg_start_new>>

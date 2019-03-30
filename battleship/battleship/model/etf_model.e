@@ -26,33 +26,47 @@ feature {NONE} -- Initialization
 			create generated_ships_temp.make (20)
 			create generated_ships.make (20)
 
-			make_board (4, False)
+			make_board (4, False, False, 0, 0, 0, 0)
 
 			numberOfCommand := 0
 			current_game := 0
 			current_total_score := 0
 			current_total_score_limit := 0
+			prev_total_score := 0
+			prev_total_score_limit := 0
 
 			current_game_mode := ""
+
+			set_give_up(False)
 
 		end
 
 feature -- board
 
-    make_board(level: INTEGER; debug_mode: BOOLEAN)
+    make_board(level: INTEGER; custom: BOOLEAN; debug_mode: BOOLEAN; dimension: INTEGER; ships: INTEGER; max_shots: INTEGER; num_bombs: INTEGER)
     	-- 13, 14, 15, 16 (easy, medium, hard, advanced)
     	--require
     	--	12 < level and level < 17
     	local
+    		boardSize, shipLimit: INTEGER
     		gamedata: GAMEDATA
     	do
-			create gamedata.make (level, debug_mode)
+			create gamedata.make (0, False, False, 0, 0, 0, 0)	-- temporary usage
+
+			if custom then
+				boardSize := dimension
+				shipLimit := ships
+			else
+				boardSize := gamedata.get_board_size (level)
+				shipLimit := gamedata.get_ship_limit (level)
+			end
 
 			-- Generate ships AFTER gamedata creation
-			generated_ships_temp := gen_ship.generate_ships (debug_mode, gamedata.current_board_size, gamedata.current_ships_limit)
+			generated_ships_temp := gen_ship.generate_ships (debug_mode, boardSize, shipLimit)
 			generated_ships := reform_generated_ships(generated_ships_temp)
 
-    		create board.make(level, debug_mode, generated_ships)
+    		create board.make(level, custom, debug_mode, generated_ships, dimension, ships, max_shots, num_bombs)
+
     	end
 
     board: BOARD
@@ -88,6 +102,19 @@ feature -- model attributes
 	current_total_score, current_total_score_limit: INTEGER
 	current_game_mode: STRING	-- For when different mode started, reset model data'debug_test', 'new_game', 'custom_setup', 'custom_setup_test'
 
+	give_up: BOOLEAN		-- when give up, this be true and affect when new game starts
+	set_give_up(val: BOOLEAN)
+		do give_up := val end
+	get_give_up: BOOLEAN
+		do Result := give_up end
+
+	-- Previous score when win / lose happens -> used for give_up then restart
+	prev_total_score, prev_total_score_limit: INTEGER
+	update_prev_score
+		do
+			prev_total_score := current_total_score
+			prev_total_score_limit := current_total_score_limit
+		end
 
 feature -- model operations
 	default_update
@@ -134,8 +161,70 @@ feature -- model operations
 			--numberOfCommand := 0		-- this should be continuous
 			current_game := 0
 			current_total_score := 0
-			current_total_score_limit := 0
+			current_total_score_limit := board.gamedata.current_score_limit
 		end
+
+	-- update current game, total score, total score limit
+	-- 	in both 'model', 'model.board.gamedata' level.
+	--	so when modificatino happens in 'BOARD.GAMEDATA',
+	--	In MODEL, before update score texts,
+	-- 	update new values from board.gamedata then display its value in MODEL (score_out).	
+	start_game_data_setting(level: INTEGER; custom: BOOLEAN; debug_mode: BOOLEAN)
+		local
+			mode: STRING
+		do
+
+			mode := board.gamedata.get_game_mode(custom, debug_mode)
+			print("%N>>>> Mode Compare: ")
+			print(current_game_mode.out + ", ")
+			print(mode.out)
+			if not (current_game_mode ~ mode) then
+
+				reset_values -- Different mode. Reset model values.
+
+			else
+
+				--create gen_ship.make_empty -- reinit random generator if same test is running
+
+				-- Same mode. Check it ended up with give_up
+				if not get_give_up then
+
+					update_current_game
+					-- GAMEDATA to MODEL
+					update_current_total_score_limit
+					--model.update_current_total_score -- done when gameover
+
+				else
+					-- previous game was given up. Need to reset games
+					set_give_up(False)
+
+					-- Get prevous scores and use
+					if prev_total_score ~ 0 and prev_total_score_limit ~ 0 then
+						update_prev_score
+					end
+					current_total_score := prev_total_score
+					current_total_score_limit := prev_total_score_limit
+
+
+				end
+			end
+
+			set_game_mode(mode)
+
+			-- in case, new_game -> give_up -> custom_setup_test
+			--	Then, current_game stays 0
+			--	because it's been reset to 0 then given_up doesn't allow to update
+			if current_game < 1 then
+				update_current_game
+			end
+
+			-- MODEL to GAMEDATA
+			board.gamedata.update_current_game(board.gamedata.current_game)
+			board.gamedata.update_current_total_score(current_total_score)
+			board.gamedata.update_current_total_score_limit(current_total_score_limit)
+
+		end
+
 
 feature -- queries
 

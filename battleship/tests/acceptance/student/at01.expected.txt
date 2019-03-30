@@ -1,0 +1,5 @@
+Type Error: specification of command executions is not type-correct
+custom_setup_test(3, 1, 1, 1) does not conform to declaration custom_setup_test(dimension: GRID_SIZE = 4 .. 12 ; ships: NUMBER_OF_SHIPS = 1 .. 7 ; max_shots: MAX_SHOTS = 1 .. 144 ; num_bombs: NUMBER_OF_BOMBS = 1 .. 7)
+custom_setup_test(4, 8, 1, 1) does not conform to declaration custom_setup_test(dimension: GRID_SIZE = 4 .. 12 ; ships: NUMBER_OF_SHIPS = 1 .. 7 ; max_shots: MAX_SHOTS = 1 .. 144 ; num_bombs: NUMBER_OF_BOMBS = 1 .. 7)
+custom_setup_test(5, 2, 145, 1) does not conform to declaration custom_setup_test(dimension: GRID_SIZE = 4 .. 12 ; ships: NUMBER_OF_SHIPS = 1 .. 7 ; max_shots: MAX_SHOTS = 1 .. 144 ; num_bombs: NUMBER_OF_BOMBS = 1 .. 7)
+custom_setup_test(5, 2, 3, 8) does not conform to declaration custom_setup_test(dimension: GRID_SIZE = 4 .. 12 ; ships: NUMBER_OF_SHIPS = 1 .. 7 ; max_shots: MAX_SHOTS = 1 .. 144 ; num_bombs: NUMBER_OF_BOMBS = 1 .. 7)

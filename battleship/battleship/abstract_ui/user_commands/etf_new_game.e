@@ -20,7 +20,6 @@ feature -- command
 		local
 			op: OPERATION_NEW_GAME
 			level_int: INTEGER
-			coord: COORD
 			mode: STRING
     	do
 
@@ -32,36 +31,21 @@ feature -- command
 
 				-- If it's not first time running and different mode
 				mode := model.board.gamedata.get_game_mode(False, False)
-				if model.current_game > 1 and not (model.current_game_mode ~ model.board.gamedata.get_game_mode(False, False)) then
+				if not (model.current_game_mode ~ model.board.gamedata.get_game_mode(False, False)) then
 					model.reset_values -- Different mode. Reset model values.
 				end
 				model.set_game_mode(mode)
 
-				model.make_board (level_int, False)
+				-- level, custom, debug, dimension, ships, max_shots, num_bombs
+				model.make_board (level_int, False, False, 0, 0, 0, 0)
 				model.board.set_started
 
 				create op.make		-- History is created in make_board
 				model.board.history.extend_history (op)
 
-				-- update current game, total score, total score limit
-				-- 	in both 'model', 'model.board.gamedata' level.
-				--	so when modificatino happens in 'BOARD',
-				--	MODEL receives values from 'BOARD' and copy to itself
-				--	Then display its value in MODEL (score_out).
-
-				-- GAMEDATA to MODEL
-				model.update_current_game
-				model.update_current_total_score_limit
-				--model.update_current_total_score -- done when gameover
-				-- MODEL to GAMEDATA
-				model.board.gamedata.update_current_game(model.board.gamedata.current_game)
-				model.board.gamedata.update_current_total_score(model.current_total_score)
-				model.board.gamedata.update_current_total_score_limit(model.current_total_score_limit)
-
-				create coord.make (level_int, level_int)
+				model.start_game_data_setting(level_int, False, False)
 
 				-- clear messages before display
-				model.board.message.clear_msg_command
 				model.board.message.clear_msg_command
 
 				model.board.message.set_msg_error (model.board.gamedata.err_ok)

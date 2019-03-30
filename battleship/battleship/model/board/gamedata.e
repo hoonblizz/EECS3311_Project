@@ -19,9 +19,14 @@ create
 
 feature
 	-- level will be 13, 14, 15, 16 (easy, medium, hard, advanced)
-	make(level: INTEGER; debug_mode: BOOLEAN)
+	make(level: INTEGER; custom: BOOLEAN; debug_mode: BOOLEAN; dimension: INTEGER; ships: INTEGER; max_shots: INTEGER; num_bombs: INTEGER)
 		do
-			set_game_default_value(level)
+			if custom then
+				set_game_default_value_custom(dimension, ships, max_shots, num_bombs)
+			else
+				set_game_default_value(level)
+			end
+
 			row_chars := <<"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L">>
 
 			create generated_ships.make (20)
@@ -254,6 +259,19 @@ feature --query
 			end
 		end
 
+	get_ship_limit(level: INTEGER): INTEGER
+		do
+			if level ~ easy_level_int then
+				Result := easy_ships_limit
+			elseif level ~ medium_level_int then
+				Result := medium_ships_limit
+			elseif level ~ hard_level_int then
+				Result := hard_ships_limit
+			elseif level ~ advanced_level_int then
+				Result := advanced_ships_limit
+			end
+		end
+
 
 
 feature --command
@@ -312,6 +330,28 @@ feature --command
 				current_ships_limit := advanced_ships_limit
 
 			end
+		end
+
+	set_game_default_value_custom(dimension: INTEGER; ships: INTEGER; max_shots: INTEGER; num_bombs: INTEGER)
+		local
+			total_score: INTEGER
+		do
+			current_level_int := 17
+			current_board_size := dimension
+			current_fire := 0
+			current_bomb := 0
+			current_score := 0
+			current_ships := 0
+			current_fire_limit := max_shots
+			current_bomb_limit := num_bombs
+			current_ships_limit := ships
+			-- Total Score is related to Size of ship
+			total_score := 0
+			across 1 |..| dimension as i loop
+				total_score := total_score + i.item
+			end
+			current_score_limit := total_score
+
 		end
 
 	-- properly formed ship locations

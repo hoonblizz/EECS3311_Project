@@ -1,0 +1,5 @@
+-- custom_setup test for error cases
+custom_setup_test(3,1,1,1)
+custom_setup_test(4,8,1,1)
+custom_setup_test(5,2,145,1)
+custom_setup_test(5,2,3,8)

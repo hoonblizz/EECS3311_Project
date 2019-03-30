@@ -1,0 +1,20 @@
+debug_test(medium)
+fire([A,1])
+bomb([C,2],[C,3])
+give_up
+custom_setup_test(6,3,30,3)
+undo
+fire([C, 3])
+fire([A, 2])
+undo
+give_up
+custom_setup_test(6,4,30,3)
+bomb([A, 3],[A, 2])
+bomb([B, 2],[C, 2])
+fire([D, 2])
+fire([E, 2])
+bomb([C, 4],[C, 3])
+fire([C, 5])
+fire([C, 6])
+give_up
+custom_setup_test(6,4,30,3)

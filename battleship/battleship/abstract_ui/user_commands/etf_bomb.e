@@ -112,6 +112,7 @@ feature -- command
 					-- transfer data to model. Some are done when debig_test or new_game
 					model.update_current_total_score
 					model.board.history.remove_all	-- clear all history to stop undo redo
+					model.update_prev_score
 				end
 
 				print("%N HISTORY AFTER - BOMB")
