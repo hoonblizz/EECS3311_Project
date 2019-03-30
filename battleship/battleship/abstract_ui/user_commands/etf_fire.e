@@ -16,6 +16,18 @@ inherit
 create
 	make
 
+feature --message
+	keepFire_or_fireAway
+		do
+			-- game start command and no fire is made yet => 'Fire Away!'
+			--	game start command in middle of battle => 'Keep Firing!'
+			if model.board.check_fire_happened then
+				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
+			else
+				model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
+			end
+		end
+
 feature -- query
 
 	check_no_shots: BOOLEAN
@@ -33,12 +45,18 @@ feature -- command
 			l_x,l_y: INTEGER
 			coord: COORD
     	do
+			print("%N===================================")
+			print("%N========== ["+ model.numberOfCommand.out + "] FIRE called ")
+			print("%N===================================")
 
-			print("%NFIRE called. Check model size: " + model.board.gamedata.current_board_size.out)
 			l_x := coordinate.row.as_integer_32
 			l_y := coordinate.column.as_integer_32
 
 			create coord.make (l_x, l_y)
+
+			model.board.update_statenum (model.numberOfCommand)
+
+			create op.make (coord)
 
 			-- Start checking error of new coord before execute
 			if not model.board.started then
@@ -48,20 +66,23 @@ feature -- command
 			elseif model.board.check_invalid_coord (coord) then
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_invalid_coord)
-				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
+				keepFire_or_fireAway
+				--model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif model.board.check_already_fired (coord) then
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_already_fired_coord)
-				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
+				keepFire_or_fireAway
+				--model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_no_shots then
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_no_shots)
-				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
+				keepFire_or_fireAway
+				--model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else
 
-				model.board.update_statenum (model.numberOfCommand)
+				--model.board.update_statenum (model.numberOfCommand)
 
-				create op.make (coord)
+				--create op.make (coord)
 
 				model.board.message.clear_msg_error_reference		-- clear '(= stateX)' message
 
@@ -70,9 +91,6 @@ feature -- command
 				model.board.history.extend_history (op)
 				op.execute
 
-				--model.board.update_stateNum_ref(model.numberofcommand + 1)	-- set number that will be assigned after all code
-				--op.set_old_stateNum(model.numberofcommand)
-
 
 				model.board.message.set_msg_error(model.board.gamedata.err_ok)
 
@@ -80,6 +98,8 @@ feature -- command
 				op.set_msg_error(model.board.message.get_msg_error)
 				op.set_msg_command(model.board.message.get_msg_command)
 				op.set_statenum (model.numberofcommand + 1)
+
+				op.set_implementation		-- copy and paste current changed board
 
 				print("%NFIRE OP message AFTER: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
 
@@ -91,13 +111,13 @@ feature -- command
 					model.update_prev_score
 				end
 
-				print("%N HISTORY AFTER - FIRE")
-				model.board.history.display_all	-- just for testing
 
 
 			end
 
 
+			print("%N HISTORY AFTER - FIRE")
+			model.board.history.display_all	-- just for testing
 
 
 			-- perform some update on the model state

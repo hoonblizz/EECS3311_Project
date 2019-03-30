@@ -51,6 +51,12 @@ feature -- queries
 			Result := history.index = 0
 		end
 
+	isfirst: BOOLEAN
+		do Result := history.isfirst end
+
+	islast: BOOLEAN
+		do Result := history.islast end
+
 
 feature -- comands
 	extend_history(a_op: OPERATION)
@@ -127,6 +133,8 @@ feature -- comands
 				print("%Nstate " + el.item.get_statenum.out)
 				print(" " + el.item.get_msg_error.out)
 				print(" -> " + el.item.get_msg_command.out)
+				print("%NBoard...%N")
+				across el.item.get_implementation as im loop print(im.item.out + " ") end
 			end
 			print("%N------------%N")
 		end

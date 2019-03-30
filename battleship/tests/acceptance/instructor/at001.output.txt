@@ -412,21 +412,21 @@
 ->debug_test(hard)
   state 26 OK -> Fire Away!
      1  2  3  4  5  6  7  8
-  A  _  _  _  _  _  _  _  _
+  A  _  _  h  h  h  _  _  _
   B  _  _  _  _  _  _  _  v
-  C  _  v  _  _  _  _  _  _
-  D  _  v  _  _  _  _  _  v
+  C  _  h  h  h  h  h  _  v
+  D  _  _  _  _  _  _  _  v
   E  _  _  _  _  _  _  _  v
-  F  _  _  _  _  _  v  _  v
-  G  _  h  h  h  h  v  _  v
-  H  _  _  _  _  _  v  _  v
+  F  _  _  _  _  _  h  _  _
+  G  _  _  _  _  _  _  _  _
+  H  _  _  _  _  _  h  h  _
   Current Game (debug): 3
   Shots: 0/24
   Bombs: 0/5
   Score: 0/15 (Total: 4/24)
   Ships: 0/5
-    5x1: [D, 8]->v;[E, 8]->v;[F, 8]->v;[G, 8]->v;[H, 8]->v
-    4x1: [G, 2]->h;[G, 3]->h;[G, 4]->h;[G, 5]->h
-    3x1: [F, 6]->v;[G, 6]->v;[H, 6]->v
-    2x1: [C, 2]->v;[D, 2]->v
-    1x1: [B, 8]->v
+    5x1: [C, 2]->h;[C, 3]->h;[C, 4]->h;[C, 5]->h;[C, 6]->h
+    4x1: [B, 8]->v;[C, 8]->v;[D, 8]->v;[E, 8]->v
+    3x1: [A, 3]->h;[A, 4]->h;[A, 5]->h
+    2x1: [H, 6]->h;[H, 7]->h
+    1x1: [F, 6]->h

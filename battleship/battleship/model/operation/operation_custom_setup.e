@@ -22,7 +22,15 @@ feature {NONE} -- constructor
 			msg_command := board.message.get_msg_command
 			stateNum := board.numberofcommand
 
+			create implementation.make (board.gamedata.current_board_size, board.gamedata.current_board_size)
+			implementation.copy (board.implementation)	-- make copy of board
+
 			print("%NCUSTOM_SETUP OP make: state "+ stateNum.out + " " + msg_error.out + " -> " + msg_command.out)
+
+			print("%NCheck copied OP board...%N")
+			across implementation as el loop
+				print(el.item.out + " ")
+			end
 
 			-- in ETF_FIRE, values are stored once again BEFORE execute
 			old_shots := board.gamedata.current_fire
@@ -40,6 +48,8 @@ feature
 	msg_command: STRING
 	stateNum: INTEGER
 
+	implementation: ARRAY2[CHARACTER] -- will be a copy of board
+
 	-- also save shots, bombs, ships, score
 	old_shots, old_bombs, old_ships, old_score, old_total_score: INTEGER
 
@@ -53,6 +63,9 @@ feature -- query
 	set_stateNum(num: INTEGER)
 		do stateNum := num end
 
+	set_implementation		-- update board to latest board state
+		do implementation.copy (board.implementation) end
+
 	get_msg_error: STRING
 		do Result := msg_error end
 
@@ -65,6 +78,9 @@ feature -- query
 	get_op_name: STRING
 		do Result := op_name end
 
+	get_implementation: ARRAY2[CHARACTER]
+		do Result := implementation end
+
 
 feature -- commands
 	-- At this point, assume all error cases are handled. (in ETF)
@@ -75,7 +91,7 @@ feature -- commands
 
 	undo
 		do
-
+			board.paste_on_board(implementation)
 		end
 
 	redo

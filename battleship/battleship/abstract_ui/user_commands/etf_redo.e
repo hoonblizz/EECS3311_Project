@@ -19,13 +19,32 @@ feature -- query
 		end
 
 feature -- command
+	msg_nothing_to_redo
+		do
+			model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_redo)
+
+			if not model.board.started then
+				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
+			elseif model.board.check_fire_happened then
+				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
+			else
+				model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
+			end
+		end
+
+feature -- command
 	redo
 		local
 			err_ref: STRING
 			stateNum: INTEGER
 			msgError, msgCommand: STRING
 			op_name: STRING
+			old_board: ARRAY2[CHARACTER]
     	do
+
+    		print("%N===================================")
+			print("%N========== ["+ model.numberOfCommand.out + "] REDO called ")
+			print("%N===================================")
 
 			-- forth
 			if
@@ -49,22 +68,16 @@ feature -- command
 				stateNum := model.board.history.item.get_statenum
 				msgError := model.board.history.item.get_msg_error
 				msgCommand := model.board.history.item.get_msg_command
+				old_board := model.board.history.item.get_implementation
 
-				-- If only stack is 'debug_test' or 'new_game', ignore.
-				if (op_name ~ "debug_test" or op_name ~ "new_game") and model.board.history.after then
+				-- If only stack is 'debug_test' or 'new_game', Pretend not exist.
+				if (op_name ~ "debug_test" or op_name ~ "new_game" or op_name ~ "custom_setup" or op_name ~ "custom_setup_test") and model.board.history.after then
 
 					print("%N" + op_name.out + ". Pretend nothing to undo...")
-					model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_redo)
-
-					if not model.board.started then
-						model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
-					elseif model.board.check_fire_happened then
-						model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
-					else
-						model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
-					end
+					msg_nothing_to_redo
 
 				else
+
 					-- Get messages from HISTORY and stack to message board
 					err_ref := msg_reference_format(model.board.history.item.get_stateNum)
 					model.board.message.set_msg_error_reference (err_ref)
@@ -72,6 +85,8 @@ feature -- command
 					model.board.message.set_msg_command (model.board.history.item.get_msg_command)
 
 				end
+
+				model.board.paste_on_board(old_board)
 
 				print("%NREDO ["+ model.board.history.item.get_op_name.out +"] messages: " + model.board.history.item.get_stateNum.out + ": " + model.board.history.item.get_msg_error.out + " -> " + model.board.history.item.get_msg_command.out)
 
@@ -84,15 +99,7 @@ feature -- command
 				model.board.message.clear_msg_command
 				model.board.message.clear_msg_error_reference
 
-				model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_redo)
-
-				if not model.board.started then
-					model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
-				elseif model.board.check_fire_happened then
-					model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
-				else
-					model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
-				end
+				msg_nothing_to_redo
 			end
 
 			model.default_update

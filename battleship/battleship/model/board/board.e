@@ -279,6 +279,22 @@ feature -- marking on board
 			implementation.put (symbol, coord.x.item, coord.y.item)
 		end
 
+	paste_on_board(imple: ARRAY2[CHARACTER])	-- for undo, paste board to current board
+		do
+			print("%NPasting board Current...%N")
+			across implementation as el loop
+				print(el.item.out + " ")
+			end
+			print("%NPasting board Target...%N")
+			across imple as el loop
+				print(el.item.out + " ")
+			end
+
+			implementation.copy (imple)
+
+
+		end
+
 feature -- check
 
 	-- Go through all ships any check any of them is hit

@@ -23,18 +23,22 @@ feature -- command
 			mode: STRING
     	do
 
+			print("%N===================================")
+			print("%N========== ["+ model.numberOfCommand.out + "] NEW_GAME called ")
+			print("%N===================================")
+
 			-- perform some update on the model state
 			-- setup board
 
 			if not model.board.started then
 				level_int := level_str.as_integer_32
 
-				-- If it's not first time running and different mode
+				-- different mode
 				mode := model.board.gamedata.get_game_mode(False, False)
-				if not (model.current_game_mode ~ model.board.gamedata.get_game_mode(False, False)) then
-					model.reset_values -- Different mode. Reset model values.
+				if model.current_game_mode /= mode then
+					model.init_gen_ship -- reinit random generator if same test is running
 				end
-				model.set_game_mode(mode)
+
 
 				-- level, custom, debug, dimension, ships, max_shots, num_bombs
 				model.make_board (level_int, False, False, 0, 0, 0, 0)

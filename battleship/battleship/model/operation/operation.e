@@ -33,6 +33,9 @@ feature -- deferred query
 	get_op_name: STRING
 		deferred end
 
+	get_implementation: ARRAY2[CHARACTER]
+		deferred end
+
 feature -- deferred commands
 	execute
 		deferred

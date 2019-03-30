@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 		do
 
 			-- When make model, init random ship generator
-			create gen_ship.make_empty
+			init_gen_ship
 			create generated_ships_temp.make (20)
 			create generated_ships.make (20)
 
@@ -92,6 +92,10 @@ feature -- Ship generator
 			end
 
 
+		end
+	init_gen_ship
+		do
+			create gen_ship.make_empty
 		end
 
 feature -- model attributes
@@ -178,13 +182,11 @@ feature -- model operations
 			print("%N>>>> Mode Compare: ")
 			print(current_game_mode.out + ", ")
 			print(mode.out)
-			if not (current_game_mode ~ mode) then
+			if current_game_mode /= mode then
 
 				reset_values -- Different mode. Reset model values.
 
 			else
-
-				--create gen_ship.make_empty -- reinit random generator if same test is running
 
 				-- Same mode. Check it ended up with give_up
 				if not get_give_up then

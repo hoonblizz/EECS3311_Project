@@ -168,6 +168,7 @@ feature -- update values
 	add_bomb
 		do
 			current_bomb := current_bomb + 1
+			print("%NBOMB count done: " + current_bomb.out)
 		end
 	add_ship
 		do
@@ -336,7 +337,7 @@ feature --command
 		local
 			total_score: INTEGER
 		do
-			current_level_int := 17
+			current_level_int := 99
 			current_board_size := dimension
 			current_fire := 0
 			current_bomb := 0
@@ -347,7 +348,7 @@ feature --command
 			current_ships_limit := ships
 			-- Total Score is related to Size of ship
 			total_score := 0
-			across 1 |..| dimension as i loop
+			across 1 |..| ships as i loop
 				total_score := total_score + i.item
 			end
 			current_score_limit := total_score

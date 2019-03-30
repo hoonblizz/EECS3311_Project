@@ -12,6 +12,18 @@ inherit
 create
 	make
 
+feature --message
+	keepFire_or_fireAway
+		do
+			-- game start command and no fire is made yet => 'Fire Away!'
+			--	game start command in middle of battle => 'Keep Firing!'
+			if model.board.check_fire_happened then
+				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
+			else
+				model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
+			end
+		end
+
 
 feature -- command
 	debug_test(level_str: INTEGER_64)
@@ -22,10 +34,20 @@ feature -- command
 			level_int: INTEGER
 			mode: STRING
     	do
+    		print("%N===================================")
+			print("%N========== ["+ model.numberOfCommand.out + "] DEBUG_TEST called ")
+			print("%N===================================")
 
 			-- perform some update on the model state
 			if not model.board.started then
 				level_int := level_str.as_integer_32
+
+				-- reinit ships if different mode before make_board
+				mode := model.board.gamedata.get_game_mode(False, True)
+				if model.current_game_mode /= mode then
+					model.init_gen_ship -- reinit random generator if same test is running
+				end
+
 
 				-- level, custom, debug, dimension, ships, max_shots, num_bombs
 				model.make_board (level_int, False, True, 0, 0, 0, 0)
@@ -56,13 +78,8 @@ feature -- command
 
 				model.board.message.set_msg_error(model.board.gamedata.err_game_already_started)
 
-				-- game start command and no fire is made yet => 'Fire Away!'
-				--	game start command in middle of battle => 'Keep Firing!'
-				if model.board.check_fire_happened then
-					model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
-				else
-					model.board.message.set_msg_command (model.board.gamedata.msg_fire_away)
-				end
+
+				keepFire_or_fireAway
 
 			end
 
