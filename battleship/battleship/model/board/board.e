@@ -117,7 +117,7 @@ feature -- call other functions
 	message: MESSAGE
 
 
-feature -- marking on board
+feature -- command
 	-- At this point, assume all error cases are handled. (in ETF)
 	mark_on_board(coord: COORD)
 		do
@@ -295,7 +295,7 @@ feature -- marking on board
 
 		end
 
-feature -- check
+feature -- query
 
 	-- Go through all ships any check any of them is hit
 	-- if sunk, return 'ship size'  <--- important!!
@@ -411,7 +411,7 @@ feature -- check
 						gamedata.current_bomb >= gamedata.current_bomb_limit)
 		end
 
-feature -- check errors in commands
+feature -- query for error
 	check_invalid_coord(coord: COORD): BOOLEAN
 		do
 			--print("%Ncheck_invalid_coord: " + coord.x.out + ", " + coord.y.out + " in " + gamedata.current_board_size.out)
@@ -442,7 +442,7 @@ feature -- check errors in commands
 		end
 
 
-feature -- display
+feature -- query for display
 	display_value_on_board(coord: COORD): CHARACTER
 		do
 			Result := implementation[coord.x, coord.y]
@@ -450,45 +450,136 @@ feature -- display
 
 feature -- out
 
+	message_out(stateNum: INTEGER): STRING
+		do
+			Result := "  " + message.get_msg_numOfCmd(stateNum) + " " + message.msg_error_reference + message.get_msg_error + " -> " + message.get_msg_command
+		end
+
     board_out: STRING
 			-- representation of board
 		local
 			size: INTEGER
 		do
-			size := gamedata.current_board_size
-			Result := "%N     "	-- 5 spaces
+			Result := ""
+			if started or gameover then
 
-			-- Draw Coord (1, 2, 3, 4 ....)
-			across 1 |..| size as h loop
-				Result := Result + h.item.out
-				-- if less than 10, leave 2 spaces. Otherwise, 1 space
-				if h.item < size then
-					if h.item < 10 then
-						Result := Result + "  "
-					else
-						Result := Result + " "
+				size := gamedata.current_board_size
+				Result := Result + "%N     "	-- 5 spaces
+
+				-- Draw Coord (1, 2, 3, 4 ....)
+				across 1 |..| size as h loop
+					Result := Result + h.item.out
+					-- if less than 10, leave 2 spaces. Otherwise, 1 space
+					if h.item < size then
+						if h.item < 10 then
+							Result := Result + "  "
+						else
+							Result := Result + " "
+						end
 					end
 				end
-			end
-			Result := Result + "%N  "
-
-			across 1 |..| size as h loop
-				-- Draw Coord (A B C D ....)
-				Result := Result + gamedata.row_chars[h.item]
-				across 1 |..| size as w loop
-					Result := Result + "  " + implementation[h.item, w.item].out
-				end
 				Result := Result + "%N  "
+
+				across 1 |..| size as h loop
+					-- Draw Coord (A B C D ....)
+					Result := Result + gamedata.row_chars[h.item]
+					across 1 |..| size as w loop
+						Result := Result + "  " + implementation[h.item, w.item].out
+					end
+					Result := Result + "%N  "
+				end
+				Result := Result.substring (1, Result.count-3)
+
 			end
-			Result := Result.substring (1, Result.count-3)
+		end
+
+	score_out(current_game: INTEGER; current_total_score: INTEGER; current_total_score_limit: INTEGER): STRING	-- for bottom of board. Scores to display
+		local
+			i: INTEGER
+			coord: COORD
+			tempRow,tempCol: INTEGER
+		do
+
+			Result := ""
+			if started or gameover then
+
+				Result := "%N  "
+				-- Current Game
+				Result := Result + "Current Game"
+				if debugMode then
+					Result := Result + " (debug)"
+				end
+				Result := Result + ": " + current_game.out
+				Result := Result + "%N  "
+				-- Shots
+				Result := Result + "Shots: "
+				Result := Result + gamedata.current_fire.out + "/" + gamedata.current_fire_limit.out
+				Result := Result + "%N  "
+				-- Bombs
+				Result := Result + "Bombs: "
+				Result := Result + gamedata.current_bomb.out + "/" + gamedata.current_bomb_limit.out
+				Result := Result + "%N  "
+				-- Score
+				Result := Result + "Score: "
+				Result := Result + gamedata.current_score.out + "/" + gamedata.current_score_limit.out
+				Result := Result + " (Total: " + current_total_score.out + "/" + current_total_score_limit.out + ")"
+				Result := Result + "%N  "
+				-- Ships
+				Result := Result + "Ships: "
+				Result := Result + gamedata.current_ships.out + "/" + gamedata.current_ships_limit.out
+
+				-- Each ships status
+				--board.gamedata.test_ships_generated -- just testing
+
+				i := gamedata.current_ships_limit
+				across gamedata.generated_ships as ship loop
+					Result := Result + "%N    "
+					Result := Result + i.out + "x1: "
+					if debugMode then
+						-- Loop for size of ship and check for hit
+						tempRow := ship.item.row
+						tempCol := ship.item.col
+
+						across 1 |..| ship.item.size as j loop
+
+							Result := Result + "[" + gamedata.row_chars[tempRow] + ", " + tempCol.out + "]"
+							Result := Result + "->"
+
+							-- Check for Hit
+							create coord.make (tempRow, tempCol)
+							Result := Result + display_value_on_board(coord).out
+
+							-- Check if last one
+							if j.item < ship.item.size then
+								Result := Result + ";"
+							end
+
+							-- Set for the next one
+							if ship.item.dir then
+								tempRow := tempRow + 1
+							else
+								tempCol := tempCol + 1
+							end
+
+						end
+					else
+						if check_ship_sunk(ship.item) then
+							Result := Result + "Sunk"
+						else
+							Result := Result + "Not Sunk"
+						end
+					end
+					i := i - 1
+				end
+
+
+			end
+
 		end
 
     out: STRING
 			-- representation of board
 		do
 			Result := ""
-			if started or gameover then
-				Result := board_out
-			end
 		end
 end

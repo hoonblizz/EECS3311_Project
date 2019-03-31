@@ -226,98 +226,16 @@ feature -- model operations
 
 feature -- queries
 
-	score_out: STRING	-- for bottom of board. Scores to display
-		local
-			i: INTEGER
-			coord: COORD
-			tempRow,tempCol: INTEGER
-		do
-
-			update_current_total_score	-- update total_score. GAMEDATA -> MODEL
-
-			Result := ""
-			if board.started or board.gameover then
-				Result := "%N  "
-				-- Current Game
-				Result := Result + "Current Game"
-				if board.debugMode then
-					Result := Result + " (debug)"
-				end
-				Result := Result + ": " + current_game.out
-				Result := Result + "%N  "
-				-- Shots
-				Result := Result + "Shots: "
-				Result := Result + board.gamedata.current_fire.out + "/" + board.gamedata.current_fire_limit.out
-				Result := Result + "%N  "
-				-- Bombs
-				Result := Result + "Bombs: "
-				Result := Result + board.gamedata.current_bomb.out + "/" + board.gamedata.current_bomb_limit.out
-				Result := Result + "%N  "
-				-- Score
-				Result := Result + "Score: "
-				Result := Result + board.gamedata.current_score.out + "/" + board.gamedata.current_score_limit.out
-				Result := Result + " (Total: " + current_total_score.out + "/" + current_total_score_limit.out + ")"
-				Result := Result + "%N  "
-				-- Ships
-				Result := Result + "Ships: "
-				Result := Result + board.gamedata.current_ships.out + "/" + board.gamedata.current_ships_limit.out
-
-				-- Each ships status
-				--board.gamedata.test_ships_generated -- just testing
-
-				i := board.gamedata.current_ships_limit
-				across board.gamedata.generated_ships as ship loop
-					Result := Result + "%N    "
-					Result := Result + i.out + "x1: "
-					if board.debugMode then
-						-- Loop for size of ship and check for hit
-						tempRow := ship.item.row
-						tempCol := ship.item.col
-
-						across 1 |..| ship.item.size as j loop
-
-							Result := Result + "[" + board.gamedata.row_chars[tempRow] + ", " + tempCol.out + "]"
-							Result := Result + "->"
-
-							-- Check for Hit
-							create coord.make (tempRow, tempCol)
-							Result := Result + board.display_value_on_board(coord).out
-
-							-- Check if last one
-							if j.item < ship.item.size then
-								Result := Result + ";"
-							end
-
-							-- Set for the next one
-							if ship.item.dir then
-								tempRow := tempRow + 1
-							else
-								tempCol := tempCol + 1
-							end
-
-						end
-					else
-						if board.check_ship_sunk(ship.item) then
-							Result := Result + "Sunk"
-						else
-							Result := Result + "Not Sunk"
-						end
-					end
-					i := i - 1
-				end
-
-
-			end
-
-		end
 
 	out : STRING
 		do
 
-			create Result.make_from_string ("  " + board.message.get_msg_numOfCmd(numberOfCommand) + " " + board.message.msg_error_reference + board.message.get_msg_error + " -> " + board.message.get_msg_command)
+			create Result.make_from_string (board.message_out(numberOfCommand))
 
-			Result.append (board.out)
-			Result.append (score_out)
+			update_current_total_score -- update total_score. GAMEDATA -> MODEL
+
+			Result.append (board.board_out)
+			Result.append (board.score_out(current_game, current_total_score, current_total_score_limit))
 
 		end
 
