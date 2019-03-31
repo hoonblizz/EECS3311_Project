@@ -75,7 +75,7 @@ feature -- command
 			num_shot := max_shots.as_integer_32
 			num_bomb := num_bombs.as_integer_32
 
-			if model.board.started then
+			if model.board.get_started then
 
 				create op.make		-- History is created in make_board
 				model.board.history.extend_history (op)

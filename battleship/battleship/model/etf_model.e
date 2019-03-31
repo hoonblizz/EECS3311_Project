@@ -136,12 +136,12 @@ feature -- model operations
 
 	update_current_total_score	-- for realtime update in score_out.
 		do
-			current_total_score := board.gamedata.current_total_score
+			current_total_score := board.gamedata.get_current_total_score
 		end
 
 	update_current_total_score_limit
 		do
-			current_total_score_limit := current_total_score_limit + board.gamedata.current_score_limit
+			current_total_score_limit := current_total_score_limit + board.gamedata.get_current_score_limit
 		end
 
 	set_game_mode(mode: STRING)
@@ -160,7 +160,7 @@ feature -- model operations
 			--numberOfCommand := 0		-- this should be continuous
 			current_game := 0
 			current_total_score := 0
-			current_total_score_limit := board.gamedata.current_score_limit
+			current_total_score_limit := board.gamedata.get_current_score_limit
 		end
 
 	-- update current game, total score, total score limit
@@ -195,8 +195,8 @@ feature -- model operations
 				else
 
 					if prev_total_score ~ 0 and prev_total_score_limit ~ 0 then
-						current_total_score := board.gamedata.current_score
-						current_total_score_limit := board.gamedata.current_score_limit
+						current_total_score := board.gamedata.get_current_score
+						current_total_score_limit := board.gamedata.get_current_score_limit
 					else
 						current_total_score := prev_total_score
 						current_total_score_limit := prev_total_score_limit
@@ -217,7 +217,7 @@ feature -- model operations
 			end
 
 			-- MODEL to GAMEDATA
-			board.gamedata.update_current_game(board.gamedata.current_game)
+			board.gamedata.update_current_game(board.gamedata.get_current_game)
 			board.gamedata.update_current_total_score(current_total_score)
 			board.gamedata.update_current_total_score_limit(current_total_score_limit)
 

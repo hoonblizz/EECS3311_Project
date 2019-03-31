@@ -17,7 +17,7 @@ class
 create
 	make
 
-feature
+feature {NONE}
 	-- level will be 13, 14, 15, 16 (easy, medium, hard, advanced)
 	make(level: INTEGER; custom: BOOLEAN; debug_mode: BOOLEAN; dimension: INTEGER; ships: INTEGER; max_shots: INTEGER; num_bombs: INTEGER)
 		do
@@ -33,12 +33,9 @@ feature
 
 		end
 
-feature --attributes
+feature {NONE} -- attributes
 
-	--gen_ship: GEN_SHIP		-- use to generate ships in random
 	-- if direction is true, vertical
-	--generated_ships_temp: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
-
 	generated_ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
 
 	-- 13, 14, 15, 16 (easy, medium, hard, advanced)
@@ -51,7 +48,11 @@ feature --attributes
 	current_fire, current_bomb, current_score, current_total_score, current_ships: INTEGER
 	current_fire_limit, current_bomb_limit, current_score_limit, current_total_score_limit, current_ships_limit: INTEGER
 
+feature  -- default values and messages
+
 	-- default values
+	row_chars: ARRAY[STRING]
+
 	game_mode_debug_test: STRING = "debug_test"
 	game_mode_new_game: STRING = "new_game"
 	game_mode_custom_setup: STRING = "custom_setup"
@@ -89,9 +90,6 @@ feature --attributes
 	advanced_score_limit : INTEGER = 28
 	advanced_ships_limit : INTEGER = 7
 
-
-	row_chars: ARRAY[STRING]
-
 	-- Game Messages and Error messages
 	msg_start_new: STRING = "Start a new game"
 	msg_fire_away: STRING = "Fire Away!"
@@ -100,16 +98,6 @@ feature --attributes
 	msg_miss: STRING = "Miss!"
 	msg_win: STRING = "You Win!"
 	msg_game_over: STRING = "Game Over!"
-
-	msg_ship_sunk(shipSize: INTEGER): STRING
-		do
-			Result := shipSize.out + "x1 ship sunk!"
-		end
-
-	msg_ships_sunk(shipSize1: INTEGER; shipSize2: INTEGER): STRING
-		do
-			Result := shipSize1.out + "x1 and " + shipSize2.out +"x1 ships sunk!"
-		end
 
 	err_ok: STRING = "OK"
 	-- For new game, debug game
@@ -138,6 +126,16 @@ feature --attributes
 
 	-- giveup
 	err_gave_up: STRING = "You gave up!"
+
+	msg_ship_sunk(shipSize: INTEGER): STRING
+		do
+			Result := shipSize.out + "x1 ship sunk!"
+		end
+
+	msg_ships_sunk(shipSize1: INTEGER; shipSize2: INTEGER): STRING
+		do
+			Result := shipSize1.out + "x1 and " + shipSize2.out +"x1 ships sunk!"
+		end
 
 feature -- update values
 
@@ -207,6 +205,51 @@ feature -- update values
 
 
 feature --query
+
+	-- Get series. Prevents client to modify gamedata values
+	get_generated_ships: ARRAYED_LIST[TUPLE[size: INTEGER; row: INTEGER; col: INTEGER; dir: BOOLEAN]]
+		do Result := generated_ships end
+
+	get_current_game: INTEGER
+		do Result := current_game end
+
+	get_current_level_int: INTEGER
+		do Result := current_level_int end
+
+	get_current_board_size: INTEGER
+		do Result := current_board_size end
+
+	get_current_fire: INTEGER
+		do Result := current_fire end
+
+	get_current_bomb: INTEGER
+		do Result := current_bomb end
+
+	get_current_score: INTEGER
+		do Result := current_score end
+
+	get_current_total_score: INTEGER
+		do Result := current_total_score end
+
+	get_current_ships: INTEGER
+		do Result := current_ships end
+
+	get_current_fire_limit: INTEGER
+		do Result := current_fire_limit end
+
+	get_current_bomb_limit: INTEGER
+		do Result := current_bomb_limit end
+
+	get_current_score_limit: INTEGER
+		do Result := current_score_limit end
+
+	get_current_total_score_limit: INTEGER
+		do Result := current_total_score_limit end
+
+	get_current_ships_limit: INTEGER
+		do Result := current_ships_limit end
+
+
 	get_level_int(level_str: INTEGER_64): INTEGER
 		do
 			if level_str ~ easy_level_str then

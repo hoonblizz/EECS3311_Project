@@ -21,7 +21,7 @@ feature -- command
 			print("%N========== ["+ model.numberOfCommand.out + "] GIVE_UP called ")
 			print("%N===================================")
 
-			if not model.board.started then
+			if not model.board.get_started then
 
 				-- clear all previous messages
 				model.board.message.clear_msg_command
@@ -41,7 +41,7 @@ feature -- command
 				model.board.message.set_msg_command (model.board.gamedata.err_gave_up)
 
 				-- check if game is over.
-				if model.board.gameover then
+				if model.board.get_gameover then
 					-- transfer data to model. Some are done when debig_test or new_game
 					-- give_up shouldn't update total_score
 					--model.update_current_total_score

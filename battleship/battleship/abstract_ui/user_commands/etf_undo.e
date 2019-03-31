@@ -24,7 +24,7 @@ feature -- command
 		do
 			model.board.message.set_msg_error(model.board.gamedata.err_nothing_to_undo)
 
-			if not model.board.started then
+			if not model.board.get_started then
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 			elseif model.board.check_fire_happened then
 				model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)

@@ -26,14 +26,14 @@ feature {NONE} -- create
 		do
 			debugMode := debug_mode
 
-			numberOfCommand_ref := 1
+			--numberOfCommand_ref := 1
 			numberOfCommand :=0
 
 			create gamedata.make(level, custom, debug_mode, dimension, ships, max_shots, num_bombs)
 			gamedata.set_generated_ships (generated_ships)
 
 			--size := gamedata.get_board_size (level)
-			size := gamedata.current_board_size
+			size := gamedata.get_current_board_size
 
 			print("%N***********************")
 			print("%N     Board Create: level: " + level.out + ", size: " + size.out)
@@ -47,7 +47,7 @@ feature {NONE} -- create
 			-- if debug mode, mark in the position
 			if debug_mode then
 				print("%NMarking v and h for board...")
-				across gamedata.generated_ships as ship loop
+				across gamedata.get_generated_ships as ship loop
 					print("%NShip [" + ship.item.row.out + ", " + ship.item.col.out + "]")
 					print(" Size: "+ ship.item.size.out +", Vertical? " + ship.item.dir.out)
 					tempRow := ship.item.row
@@ -72,31 +72,32 @@ feature {NONE} -- create
 feature {OPERATION} -- implementation
 	implementation: ARRAY2[CHARACTER]
 
+feature -- call other functions
+ 	history: HISTORY
+ 	gamedata: GAMEDATA
+	message: MESSAGE
 
-feature  -- game started
 
-    started: BOOLEAN
-    	-- has the game started?
+feature {NONE} -- game started
 
+    started: BOOLEAN -- has the game started?
     gameover: BOOLEAN
-
     debugMode: BOOLEAN	-- is it debug mode now?
-    -- just for undo, redo. Check OPERATION_FIRE
-	--		only update (set same as numberOfCommand)
-	--	 	when history.extend happened. (when this happens, all rights are removed)
-	--
-    numberOfCommand_ref: INTEGER
-    update_stateNum_ref(val: INTEGER)		-- only for undo,redo message
-		do numberOfCommand_ref := val end
-
 	numberOfCommand: INTEGER		-- this gets updated from model, everytime model's numberOfCommand is updated.
-	update_stateNum(val: INTEGER)
-		do  numberOfCommand := val end
+
+feature	-- get, set game starte variables
+	get_started: BOOLEAN
+		do Result := started end
 
     set_started
     	do started := True end
+
     set_not_started
     	do started := False end
+
+	get_gameover: BOOLEAN
+		do Result := gameover end
+
     set_gameover
     	do
     		gameover := True
@@ -105,19 +106,22 @@ feature  -- game started
 			-- History clear is also called there
 
     	end
+
     set_not_gameover
     	do gameover := False end
+
     set_debugMode
     	do debugMode := True end
 
+	update_stateNum(val: INTEGER)
+		do  numberOfCommand := val end
 
-feature -- call other functions
- 	history: HISTORY
- 	gamedata: GAMEDATA
-	message: MESSAGE
+	get_numberOfCommand: INTEGER
+		do Result := numberOfCommand end
 
 
-feature -- command
+
+feature {OPERATION} -- command
 	-- At this point, assume all error cases are handled. (in ETF)
 	mark_on_board(coord: COORD)
 		do
@@ -273,26 +277,13 @@ feature -- command
 
 		end
 
-	mark_empty(coord: COORD; symbol: CHARACTER)	-- for undo
-		do
-			--print("%NMark previous CHAR in ["+ coord.x.out + ", "+ coord.y.out +"]: " + symbol.out)
-			implementation.put (symbol, coord.x.item, coord.y.item)
-		end
+	
 
-	paste_on_board(imple: ARRAY2[CHARACTER])	-- for undo, paste board to current board
+feature
+	-- for undo, paste AFTER processed board to current board
+	paste_on_board(imple: ARRAY2[CHARACTER])
 		do
-			print("%NPasting board Current...%N")
-			across implementation as el loop
-				print(el.item.out + " ")
-			end
-			print("%NPasting board Target...%N")
-			across imple as el loop
-				print(el.item.out + " ")
-			end
-
 			implementation.copy (imple)
-
-
 		end
 
 feature -- query
@@ -309,7 +300,7 @@ feature -- query
 		do
 			matchedShipSize := 0
 
-			across gamedata.generated_ships as ship loop
+			across gamedata.get_generated_ships as ship loop
 				tempRow := ship.item.row
 				tempCol := ship.item.col
 
@@ -389,7 +380,7 @@ feature -- query
 			sunk := False
 			shipSize := check_coord_is_hit(coord)
 
-			across gamedata.generated_ships as ship loop
+			across gamedata.get_generated_ships as ship loop
 				if ship.item.size ~ shipSize then
 					sunk := check_ship_sunk(ship.item)
 				end
@@ -401,21 +392,21 @@ feature -- query
 	-- if all ships are sunk, win
 	check_win: BOOLEAN
 		do
-			Result := (gamedata.current_ships >= gamedata.current_ships_limit)
+			Result := (gamedata.get_current_ships >= gamedata.get_current_ships_limit)
 		end
 
 	-- Assume 'check_win' checked first. So we know all ships are not sunk
 	check_lose: BOOLEAN
 		do
-			Result := (gamedata.current_fire >= gamedata.current_fire_limit and
-						gamedata.current_bomb >= gamedata.current_bomb_limit)
+			Result := (gamedata.get_current_fire >= gamedata.get_current_fire_limit and
+						gamedata.get_current_bomb >= gamedata.get_current_bomb_limit)
 		end
 
 feature -- query for error
 	check_invalid_coord(coord: COORD): BOOLEAN
 		do
 			--print("%Ncheck_invalid_coord: " + coord.x.out + ", " + coord.y.out + " in " + gamedata.current_board_size.out)
-			Result := not (coord.x <= gamedata.current_board_size and coord.y <= gamedata.current_board_size)
+			Result := not (coord.x <= gamedata.get_current_board_size and coord.y <= gamedata.get_current_board_size)
 		end
 
 	check_already_fired(coord: COORD): BOOLEAN
@@ -438,7 +429,7 @@ feature -- query for error
 
 	check_fire_happened: BOOLEAN
 		do
-			Result := (gamedata.current_fire > 0 or gamedata.current_bomb > 0)
+			Result := (gamedata.get_current_fire > 0 or gamedata.get_current_bomb > 0)
 		end
 
 
@@ -448,11 +439,11 @@ feature -- query for display
 			Result := implementation[coord.x, coord.y]
 		end
 
-feature -- out
+feature {ETF_MODEL} -- out
 
 	message_out(stateNum: INTEGER): STRING
 		do
-			Result := "  " + message.get_msg_numOfCmd(stateNum) + " " + message.msg_error_reference + message.get_msg_error + " -> " + message.get_msg_command
+			Result := "  " + message.get_msg_numOfCmd(stateNum) + " " + message.get_msg_error_reference + message.get_msg_error + " -> " + message.get_msg_command
 		end
 
     board_out: STRING
@@ -463,7 +454,7 @@ feature -- out
 			Result := ""
 			if started or gameover then
 
-				size := gamedata.current_board_size
+				size := gamedata.get_current_board_size
 				Result := Result + "%N     "	-- 5 spaces
 
 				-- Draw Coord (1, 2, 3, 4 ....)
@@ -513,26 +504,26 @@ feature -- out
 				Result := Result + "%N  "
 				-- Shots
 				Result := Result + "Shots: "
-				Result := Result + gamedata.current_fire.out + "/" + gamedata.current_fire_limit.out
+				Result := Result + gamedata.get_current_fire.out + "/" + gamedata.get_current_fire_limit.out
 				Result := Result + "%N  "
 				-- Bombs
 				Result := Result + "Bombs: "
-				Result := Result + gamedata.current_bomb.out + "/" + gamedata.current_bomb_limit.out
+				Result := Result + gamedata.get_current_bomb.out + "/" + gamedata.get_current_bomb_limit.out
 				Result := Result + "%N  "
 				-- Score
 				Result := Result + "Score: "
-				Result := Result + gamedata.current_score.out + "/" + gamedata.current_score_limit.out
+				Result := Result + gamedata.get_current_score.out + "/" + gamedata.get_current_score_limit.out
 				Result := Result + " (Total: " + current_total_score.out + "/" + current_total_score_limit.out + ")"
 				Result := Result + "%N  "
 				-- Ships
 				Result := Result + "Ships: "
-				Result := Result + gamedata.current_ships.out + "/" + gamedata.current_ships_limit.out
+				Result := Result + gamedata.get_current_ships.out + "/" + gamedata.get_current_ships_limit.out
 
 				-- Each ships status
 				--board.gamedata.test_ships_generated -- just testing
 
-				i := gamedata.current_ships_limit
-				across gamedata.generated_ships as ship loop
+				i := gamedata.get_current_ships_limit
+				across gamedata.get_generated_ships as ship loop
 					Result := Result + "%N    "
 					Result := Result + i.out + "x1: "
 					if debugMode then

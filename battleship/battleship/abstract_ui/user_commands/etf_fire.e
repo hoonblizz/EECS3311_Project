@@ -32,7 +32,7 @@ feature -- query
 
 	check_no_shots: BOOLEAN
 		do
-			Result := (model.board.gamedata.current_fire >= model.board.gamedata.current_fire_limit)
+			Result := (model.board.gamedata.get_current_fire >= model.board.gamedata.get_current_fire_limit)
 		end
 
 feature -- command
@@ -59,7 +59,7 @@ feature -- command
 			create op.make (coord)
 
 			-- Start checking error of new coord before execute
-			if not model.board.started then
+			if not model.board.get_started then
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_game_not_started)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
@@ -100,7 +100,7 @@ feature -- command
 				print("%NFIRE OP message AFTER: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
 
 				-- check if game is over.
-				if model.board.gameover then
+				if model.board.get_gameover then
 					-- transfer data to model. Some are done when debig_test or new_game
 					model.update_current_total_score
 					model.board.history.remove_all	-- clear all history to stop undo redo

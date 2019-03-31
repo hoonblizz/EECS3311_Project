@@ -30,7 +30,7 @@ feature -- command
 			-- perform some update on the model state
 			-- setup board
 
-			if not model.board.started then
+			if not model.board.get_started then
 				level_int := level_str.as_integer_32
 
 				-- different mode

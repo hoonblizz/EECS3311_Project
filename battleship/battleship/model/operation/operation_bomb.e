@@ -23,9 +23,9 @@ feature {NONE} -- constructor
 
 			msg_error := board.message.get_msg_error
 			msg_command := board.message.get_msg_command
-			stateNum := board.numberofcommand
+			stateNum := board.get_numberofcommand
 
-			create implementation.make (board.gamedata.current_board_size, board.gamedata.current_board_size)
+			create implementation.make (board.gamedata.get_current_board_size, board.gamedata.get_current_board_size)
 			implementation.copy(board.implementation)	-- make copy of board
 
 			print("%NBOMB OP make: state "+ stateNum.out + " " + msg_error.out + " -> " + msg_command.out)
@@ -36,14 +36,14 @@ feature {NONE} -- constructor
 			end
 
 			-- in ETF_FIRE, values are stored once again BEFORE execute
-			old_shots := board.gamedata.current_fire
-			old_bombs := board.gamedata.current_bomb
-			old_ships := board.gamedata.current_ships
-			old_score := board.gamedata.current_score
-			old_total_score := board.gamedata.current_total_score
+			old_shots := board.gamedata.get_current_fire
+			old_bombs := board.gamedata.get_current_bomb
+			old_ships := board.gamedata.get_current_ships
+			old_score := board.gamedata.get_current_score
+			old_total_score := board.gamedata.get_current_total_score
 		end
 
-feature
+feature {NONE} 
 	op_name: STRING = "bomb"
 
 	position1: COORD

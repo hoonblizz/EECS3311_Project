@@ -32,7 +32,7 @@ feature -- query
 
 	check_no_bombs: BOOLEAN
 		do
-			Result := (model.board.gamedata.current_bomb >= model.board.gamedata.current_bomb_limit)
+			Result := (model.board.gamedata.get_current_bomb >= model.board.gamedata.get_current_bomb_limit)
 		end
 
 	check_not_adjacent(coord1: COORD; coord2: COORD): BOOLEAN
@@ -83,7 +83,7 @@ feature -- command
 			create op.make (coord1, coord2)
 
 			-- Start checking error of new coord before execute
-			if not model.board.started then
+			if not model.board.get_started then
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_game_not_started)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
@@ -137,7 +137,7 @@ feature -- command
 				op.set_implementation		-- copy and paste current changed board
 
 				-- check if game is over.
-				if model.board.gameover then
+				if model.board.get_gameover then
 					-- transfer data to model. Some are done when debig_test or new_game
 					model.update_current_total_score
 					model.board.history.remove_all	-- clear all history to stop undo redo

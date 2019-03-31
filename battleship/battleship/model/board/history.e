@@ -51,25 +51,12 @@ feature -- queries
 			Result := history.index = 0
 		end
 
-	isfirst: BOOLEAN
-		do Result := history.isfirst end
-
-	islast: BOOLEAN
-		do Result := history.islast end
-
-
 feature -- comands
 	extend_history(a_op: OPERATION)
 			-- remove all operations to the right of the current
 			-- cursor in history, then extend with `a_op'
 		do
-			--print("%NExtending...")
-			--display_cursor_stateNum
-
-			--history.start
-			--print("%NAfter start: ")
-			--display_cursor_stateNum
-
+		
 			remove_right
 			history.extend(a_op)
 			history.finish
@@ -88,7 +75,6 @@ feature -- comands
 				until
 					history.after
 				loop
-					print("%NRemoving....")
 					history.remove
 				end
 			end

@@ -27,23 +27,15 @@ feature
 			msg_command := <<gamedata.msg_start_new>>
 			msg_error_reference := ""	-- in general, it'm empty. But in undo, redo
 
-			-- For undo. If no item after back, display this.
-			--		default_msg_stateNum should be updated when new game starts
-			default_msg_stateNum := 1
-			default_msg_error := gamedata.err_ok
-			default_msg_command := gamedata.msg_start_new
 		end
 
-feature
-
-	default_msg_stateNum: INTEGER
-	default_msg_error: STRING
-	default_msg_command: STRING
+feature {NONE}
 
 	msg_error: STRING
-	msg_error_reference: STRING	-- only for undo, redo cases
+	msg_error_reference: STRING	-- only for undo, redo cases. Like, (=state3)
 	msg_command: ARRAY[STRING	]
 
+feature
 	set_msg_error(a_message: STRING)
 		do
 			msg_error := a_message
@@ -58,13 +50,6 @@ feature
 	set_msg_command(a_message: STRING)
 		do
 			msg_command.force(a_message, msg_command.count + 1)
-		end
-
-	set_default_msg(stateNum: INTEGER; err: STRING; cmd: STRING) -- in new_game, debug_test
-		do
-			default_msg_stateNum := stateNum
-			default_msg_error := err
-			default_msg_command := cmd
 		end
 
 	get_msg_numOfCmd(numOfCmd: INTEGER): STRING
