@@ -125,11 +125,6 @@ feature -- model operations
 			-- Perform update to the model state.
 		do
 			numberOfCommand := numberOfCommand + 1
-			--board.update_statenum (numberOfCommand) -- for OPERATION_FIRE
-
-			if board.numberofcommand_ref ~ 0 then
-				--board.update_statenum_ref (numberOfCommand)
-			end
 		end
 
 	-- these updates are from 'BOARD.GAMEDATA' to 'MODEL'
@@ -176,13 +171,14 @@ feature -- model operations
 	start_game_data_setting(level: INTEGER; custom: BOOLEAN; debug_mode: BOOLEAN)
 		local
 			mode: STRING
+			total_score_limit: INTEGER
 		do
 
 			mode := board.gamedata.get_game_mode(custom, debug_mode)
 			print("%N>>>> Mode Compare: ")
 			print(current_game_mode.out + ", ")
 			print(mode.out)
-			if current_game_mode /= mode then
+			if current_game_mode /~ mode then
 
 				reset_values -- Different mode. Reset model values.
 
@@ -197,21 +193,21 @@ feature -- model operations
 					--model.update_current_total_score -- done when gameover
 
 				else
-					-- previous game was given up. Need to reset games
-					set_give_up(False)
 
-					-- Get prevous scores and use
 					if prev_total_score ~ 0 and prev_total_score_limit ~ 0 then
-						update_prev_score
+						current_total_score := board.gamedata.current_score
+						current_total_score_limit := board.gamedata.current_score_limit
+					else
+						current_total_score := prev_total_score
+						current_total_score_limit := prev_total_score_limit
 					end
-					current_total_score := prev_total_score
-					current_total_score_limit := prev_total_score_limit
-
 
 				end
 			end
 
 			set_game_mode(mode)
+			-- Need to reset games when started new
+			set_give_up(False)
 
 			-- in case, new_game -> give_up -> custom_setup_test
 			--	Then, current_game stays 0

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-OUTPUTFILE="at002.output.txt"
-OUTPUTLOC="./tests/acceptance/instructor/at002.output.txt"
-EXELOC="./EIFGENs/battleship/W_code/battleship"
-ACCTEST="./tests/acceptance/instructor/at002.txt"
-EXPFILE="./tests/acceptance/instructor/at002.expected.txt"
+OUTPUTFILE="at02.output.txt"
+OUTPUTLOC="./acceptance/student/at02.output.txt"
+EXELOC="../EIFGENs/battleship/W_code/battleship"
+ACCTEST="./acceptance/student/at02.txt"
+EXPFILE="./acceptance/student/at02.expected.txt"
 
 # compile ecf project (If -finalize is added, code is generated in F_code folder)
 #ec -c_compile -config battleship.ecf

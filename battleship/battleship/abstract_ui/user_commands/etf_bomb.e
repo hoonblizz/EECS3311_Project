@@ -93,10 +93,10 @@ feature -- command
 				keepFire_or_fireAway
 				--model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			elseif check_not_adjacent(coord1, coord2) then
+
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_adjacent_coord)
 				keepFire_or_fireAway
-				--model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 
 				model.board.history.extend_history (op)
 
@@ -105,8 +105,6 @@ feature -- command
 				op.set_msg_command(model.board.message.get_msg_command)
 				op.set_statenum (model.numberofcommand + 1)	-- for redo
 				print("%NBOMB OP message AFTER: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
-
-
 
 			elseif model.board.check_already_fired (coord1) or model.board.check_already_fired (coord2) then
 				model.board.message.clear_msg_command
@@ -119,10 +117,6 @@ feature -- command
 				keepFire_or_fireAway
 				--model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else
-
-				--model.board.update_statenum (model.numberOfCommand)
-
-				--create op.make (coord1, coord2)
 
 				model.board.message.clear_msg_error_reference		-- clear '(= stateX)' message
 

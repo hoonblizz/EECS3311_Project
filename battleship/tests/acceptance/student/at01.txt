@@ -1,5 +1,9 @@
--- custom_setup test for error cases
-custom_setup_test(3,1,1,1)
-custom_setup_test(4,8,1,1)
-custom_setup_test(5,2,145,1)
-custom_setup_test(5,2,3,8)
+custom_setup_test(12,3,1,1) -- not enough ships
+custom_setup_test(10,7,1,1) -- too many ships
+custom_setup_test(10,3,1,3) -- not enough shots
+custom_setup_test(10,3,101,3) -- too many shot
+custom_setup_test(10,3,55,1) -- not enough bombs
+custom_setup_test(10,3,55,7) -- too many bombs
+custom_setup_test(10,7,54,1) -- too many ships and not enough shots and not enough bombs
+custom_setup_test(10,6,101,1) -- too many shots and not enough bombs
+custom_setup_test(10,6,10,2) -- not enough shots and bombs

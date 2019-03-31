@@ -35,9 +35,10 @@ feature -- command
 
 				-- different mode
 				mode := model.board.gamedata.get_game_mode(False, False)
-				if model.current_game_mode /= mode then
+				if model.current_game_mode /~ mode and not (model.current_game_mode ~ "custom_setup") then
 					model.init_gen_ship -- reinit random generator if same test is running
 				end
+				--model.set_game_mode (mode)
 
 
 				-- level, custom, debug, dimension, ships, max_shots, num_bombs

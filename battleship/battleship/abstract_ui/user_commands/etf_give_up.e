@@ -30,6 +30,8 @@ feature -- command
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 			else
 
+				model.board.message.clear_msg_error_reference		-- clear '(= stateX)' message
+
 				model.board.set_gameover
 
 				-- clear all previous messages

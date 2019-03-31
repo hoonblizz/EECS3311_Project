@@ -25,7 +25,7 @@ type NUMBER_OF_SHIPS = 1..7
 	-- generate n ships of size 1..n
 type MAX_SHOTS = 1..144 				
 	-- max number of shots (n) for the `custom_setup' command
-	-- SUM(1..GRID_SIZE) <= n <= (GRID_SIZE)^2
+	-- NUMBER_OF_SHIPS * (NUMBER_OF_SHIPS + 1) // 2 <= n <= (GRID_SIZE)^2
 type NUMBER_OF_BOMBS = 1..7
 	-- max number of bombs (n) for the `custom_setup' command
 	-- (GRID_SIZE // 3) <= n <= (GRID_SIZE // 2) + 1, for any grid

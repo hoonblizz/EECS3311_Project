@@ -80,10 +80,6 @@ feature -- command
 				--model.board.message.set_msg_command (model.board.gamedata.msg_keep_fire)
 			else
 
-				--model.board.update_statenum (model.numberOfCommand)
-
-				--create op.make (coord)
-
 				model.board.message.clear_msg_error_reference		-- clear '(= stateX)' message
 
 				print("%NFIRE OP message BEFORE: ["+ op.get_op_name.out +"] state "+ op.get_stateNum.out + " " + op.get_msg_error.out + " -> " +op.get_msg_command.out)
