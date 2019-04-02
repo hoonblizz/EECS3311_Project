@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {OPERATION_FIRE}."
-	author: ""
+	author: "Taehoon Kim"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -23,15 +23,9 @@ feature {NONE} -- constructor
 			msg_command := board.message.get_msg_command
 			stateNum := board.get_numberofcommand
 
-			create implementation.make (board.gamedata.get_current_board_size, board.gamedata.get_current_board_size)
+			create implementation.make_filled ('_', board.gamedata.get_current_board_size, board.gamedata.get_current_board_size)
 			implementation.copy (board.implementation)	-- make copy of board
 
-			print("%NFIRE OP make: state "+ stateNum.out + " " + msg_error.out + " -> " + msg_command.out)
-
-			print("%NCheck copied OP board...%N")
-			across implementation as el loop
-				print(el.item.out + " ")
-			end
 
 			-- in ETF_FIRE, values are stored once again BEFORE execute
 			old_shots := board.gamedata.get_current_fire
@@ -51,8 +45,6 @@ feature {NONE} -- protect variables for each command
 	stateNum: INTEGER
 
 	implementation: ARRAY2[CHARACTER] -- will be a copy of board
-	old_implementation: CHARACTER	--save what the symbol was ( '_', 'v', 'h')
-	new_implementation: CHARACTER
 
 	-- also save shots, bombs, ships, score
 	old_shots, old_bombs, old_ships, old_score, old_total_score: INTEGER
@@ -92,11 +84,9 @@ feature -- commands
 	-- At this point, assume all error cases are handled. (in ETF)
 	execute
 		do
-			print("%NFIRE OP called. Check board: " + board.gamedata.get_current_board_size.out)
-			print(" => Pos: [" + position.x.out + "," + position.y.out + "]")
-			old_implementation := board.implementation[position.x, position.y]
+
 			board.mark_fire (position) -- going to mark 'X' or 'O'
-			new_implementation := board.implementation[position.x, position.y]
+
 		end
 
 	undo
@@ -116,8 +106,9 @@ feature -- commands
 
 	redo
 		do
-			-- To Do
-			execute
+			if msg_error ~ board.gamedata.err_ok then
+				execute
+			end
 		end
 
 

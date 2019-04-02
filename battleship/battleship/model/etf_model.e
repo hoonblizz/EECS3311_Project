@@ -175,9 +175,7 @@ feature -- model operations
 		do
 
 			mode := board.gamedata.get_game_mode(custom, debug_mode)
-			print("%N>>>> Mode Compare: ")
-			print(current_game_mode.out + ", ")
-			print(mode.out)
+
 			if current_game_mode /~ mode then
 
 				reset_values -- Different mode. Reset model values.

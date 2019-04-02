@@ -17,9 +17,9 @@ feature -- command
 	give_up
 		do
 
-			print("%N===================================")
-			print("%N========== ["+ model.numberOfCommand.out + "] GIVE_UP called ")
-			print("%N===================================")
+			--print("%N===================================")
+			--print("%N========== ["+ model.numberOfCommand.out + "] GIVE_UP called ")
+			--print("%N===================================")
 
 			if not model.board.get_started then
 

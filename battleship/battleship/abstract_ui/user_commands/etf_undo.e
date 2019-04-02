@@ -43,9 +43,9 @@ feature -- command
 			old_board: ARRAY2[CHARACTER]
     	do
 
-    		print("%N===================================")
-			print("%N========== ["+ model.numberOfCommand.out + "] UNDO called ")
-			print("%N===================================")
+    		--print("%N===================================")
+			--print("%N========== ["+ model.numberOfCommand.out + "] UNDO called ")
+			--print("%N===================================")
 
 			if model.board.history.after then		-- no valid cursor on right
 				model.board.history.back
@@ -62,8 +62,7 @@ feature -- command
 				msgCommand := model.board.history.item.get_msg_command
 				old_board := model.board.history.item.get_implementation
 
-				print("%NCheck before BACK board...%N")
-				across old_board as el loop print(el.item.out + " ") end
+
 
 				model.board.history.item.undo
 
@@ -84,9 +83,6 @@ feature -- command
 					msgCommand := model.board.history.item.get_msg_command
 					old_board := model.board.history.item.get_implementation
 
-					print("%NCheck after BACK board...%N")
-					across old_board as el loop print(el.item.out + " ") end
-
 
 					err_ref := msg_reference_format(stateNum)
 					model.board.message.set_msg_error_reference (err_ref)
@@ -95,7 +91,7 @@ feature -- command
 
 
 				else
-					print("%NAfter back, on_item is not valid.......!!!")
+					--print("%NAfter back, on_item is not valid.......!!!")
 
 					-- clear messages before display
 					model.board.message.clear_msg_command
@@ -104,7 +100,7 @@ feature -- command
 					msg_nothing_to_undo
 
 					-- check if other items still exist. then move forward
-					print("%NCheck history NOT exist on right: " + model.board.history.after.out)
+					--print("%NCheck history NOT exist on right: " + model.board.history.after.out)
 					if not model.board.history.after then
 						model.board.history.forth
 					end
@@ -113,7 +109,7 @@ feature -- command
 
 				model.board.paste_on_board(old_board)
 
-				print("%NUNDO ["+ op_name.out +"] messages: " + stateNum.out + ": " + msgError.out + " -> " + msgCommand.out)
+				--print("%NUNDO ["+ op_name.out +"] messages: " + stateNum.out + ": " + msgError.out + " -> " + msgCommand.out)
 
 			else
 
@@ -125,8 +121,8 @@ feature -- command
 
 			end
 
-			print("%N HISTORY AFTER - UNDO")
-			model.board.history.display_all	-- just for testing
+			--print("%N HISTORY AFTER - UNDO")
+			--model.board.history.display_all	-- just for testing
 
 			model.default_update
 			etf_cmd_container.on_change.notify ([Current])

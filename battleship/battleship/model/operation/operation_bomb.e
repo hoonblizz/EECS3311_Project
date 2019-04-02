@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {OPERATION_BOMB}."
-	author: ""
+	author: "Taehoon Kim"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,15 +25,8 @@ feature {NONE} -- constructor
 			msg_command := board.message.get_msg_command
 			stateNum := board.get_numberofcommand
 
-			create implementation.make (board.gamedata.get_current_board_size, board.gamedata.get_current_board_size)
+			create implementation.make_filled ('_', board.gamedata.get_current_board_size, board.gamedata.get_current_board_size)
 			implementation.copy(board.implementation)	-- make copy of board
-
-			print("%NBOMB OP make: state "+ stateNum.out + " " + msg_error.out + " -> " + msg_command.out)
-
-			print("%NCheck copied OP board...%N")
-			across implementation as el loop
-				print(el.item.out + " ")
-			end
 
 			-- in ETF_FIRE, values are stored once again BEFORE execute
 			old_shots := board.gamedata.get_current_fire
@@ -43,7 +36,7 @@ feature {NONE} -- constructor
 			old_total_score := board.gamedata.get_current_total_score
 		end
 
-feature {NONE} 
+feature {NONE}
 	op_name: STRING = "bomb"
 
 	position1: COORD
@@ -54,10 +47,6 @@ feature {NONE}
 	stateNum: INTEGER
 
 	implementation: ARRAY2[CHARACTER] -- will be a copy of board
-	old_implementation1: CHARACTER	--save what the symbol was ( '_', 'v', 'h')
-	old_implementation2: CHARACTER
-	new_implementation1: CHARACTER
-	new_implementation2: CHARACTER
 
 	-- also save shots, bombs, ships, score
 	old_shots, old_bombs, old_ships, old_score, old_total_score: INTEGER
@@ -94,25 +83,13 @@ feature -- commands
 	-- At this point, assume all error cases are handled. (in ETF)
 	execute
 		do
-			old_implementation1 := board.implementation[position1.x, position1.y]
-			old_implementation2 := board.implementation[position2.x, position2.y]
+
 			board.mark_bomb (position1, position2) -- going to mark 'X' or 'O'
-			new_implementation1 := board.implementation[position1.x, position1.y]
-			new_implementation2 := board.implementation[position2.x, position2.y]
+
 		end
 
 	undo
 		do
-
-			-- undo execution only be done when error is OK.
-			-- Just need message to display
-			if op_name ~ board.gamedata.err_ok then
-				--board.mark_empty(position1, old_implementation1)
-				--board.mark_empty(position2, old_implementation2)
-
-			else
-
-			end
 
 			--board.paste_on_board(implementation) -- moved to end of undo process
 
@@ -128,8 +105,11 @@ feature -- commands
 
 	redo
 		do
-			-- To Do
-			execute
+
+			if msg_error ~ board.gamedata.err_ok then
+				execute
+			end
+
 		end
 
 

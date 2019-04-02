@@ -7,7 +7,7 @@ note
 		-- ex) state 9 OK -> 4x1 and 3x1 ships sunk! Keep Firing!
 		-- ex) state 12 OK -> 2x1 ship sunk! Keep Firing!
 	]"
-	author: ""
+	author: "Taehoon Kim"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -67,6 +67,8 @@ feature
 		end
 
 	get_msg_command: STRING
+		require
+			get_msg_command.count > 1
 		local
 			temp: STRING
 			i: INTEGER
@@ -87,6 +89,8 @@ feature
 	clear_msg_command
 		do
 			msg_command.make_empty
+		ensure
+			Current.get_msg_command.is_empty
 		end
 
 	clear_msg_error_reference

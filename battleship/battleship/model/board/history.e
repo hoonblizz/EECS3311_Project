@@ -1,6 +1,8 @@
 note
-	description: "Summary description for {HISTORY}."
-	author: ""
+	description: "[
+		This was available in chess example from professor.
+	]"
+	author: "Taehoon Kim"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -17,9 +19,6 @@ feature{NONE} -- create
 		end
 
 	history: LIST[OPERATION]
-		-- a history list of user invoked operations
-		-- implementation
-
 
 feature -- queries
 	item: OPERATION
@@ -53,14 +52,10 @@ feature -- queries
 
 feature -- comands
 	extend_history(a_op: OPERATION)
-			-- remove all operations to the right of the current
-			-- cursor in history, then extend with `a_op'
 		do
-		
 			remove_right
 			history.extend(a_op)
 			history.finish
-
 		ensure
 			history[history.count] = a_op
 		end
@@ -93,7 +88,6 @@ feature -- comands
 			not after
 		do
 			history.forth
-			print("%NForwarding....")
 			display_cursor_stateNum
 
 		end
@@ -103,34 +97,33 @@ feature -- comands
 			not before
 		do
 			history.back
-			print("%NBacking....")
 			display_cursor_stateNum
 		end
 
 
 	display_all		-- only for testing. See all contents
 		do
-			print("%N------------")
-			print("%N   HISTORY: ")
-			display_cursor_stateNum
-			across history as el loop
-				print("%N>>>>>>>>>>>")
-				print("%NOP Name: " + el.item.get_op_name.out)
-				print("%Nstate " + el.item.get_statenum.out)
-				print(" " + el.item.get_msg_error.out)
-				print(" -> " + el.item.get_msg_command.out)
-				print("%NBoard...%N")
-				across el.item.get_implementation as im loop print(im.item.out + " ") end
-			end
-			print("%N------------%N")
+			--print("%N------------")
+			--print("%N   HISTORY: ")
+			--display_cursor_stateNum
+			--across history as el loop
+				--print("%N>>>>>>>>>>>")
+				--print("%NOP Name: " + el.item.get_op_name.out)
+				--print("%Nstate " + el.item.get_statenum.out)
+				--print(" " + el.item.get_msg_error.out)
+				--print(" -> " + el.item.get_msg_command.out)
+				--print("%NBoard...%N")
+				--across el.item.get_implementation as im loop print(im.item.out + " ") end
+			--end
+			--print("%N------------%N")
 		end
 
 	display_cursor_stateNum
 		do
 			if on_item then
-				print("Cursor Pos State: [ " + history.item.get_statenum.out + " ]")
+				--print("Cursor Pos State: [ " + history.item.get_statenum.out + " ]")
 			else
-				print("Cursor NOT VALID: [First? " + history.isfirst.out + ", Last? " + history.islast.out + "]")
+				--print("Cursor NOT VALID: [First? " + history.isfirst.out + ", Last? " + history.islast.out + "]")
 			end
 		end
 

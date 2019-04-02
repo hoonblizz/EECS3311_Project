@@ -1,16 +1,12 @@
 note
-	description: "[
-		Display game board
-	]"
-	author: ""
+	description: "Display game board"
+	author: "Taehoon Kim"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	BOARD
-inherit
-	ANY
-		redefine out end
+
 
 create
 	make
@@ -26,7 +22,6 @@ feature {NONE} -- create
 		do
 			debugMode := debug_mode
 
-			--numberOfCommand_ref := 1
 			numberOfCommand :=0
 
 			create gamedata.make(level, custom, debug_mode, dimension, ships, max_shots, num_bombs)
@@ -35,10 +30,10 @@ feature {NONE} -- create
 			--size := gamedata.get_board_size (level)
 			size := gamedata.get_current_board_size
 
-			print("%N***********************")
-			print("%N     Board Create: level: " + level.out + ", size: " + size.out)
-			print(" Custom? " + custom.out + ", Debug? " + debug_mode.out)
-			print("%N***********************%N")
+			--print("%N***********************")
+			--print("%N     Board Create: level: " + level.out + ", size: " + size.out)
+			--print(" Custom? " + custom.out + ", Debug? " + debug_mode.out)
+			--print("%N***********************%N")
 
 			create implementation.make_filled ('_', size, size)
 
@@ -46,10 +41,10 @@ feature {NONE} -- create
 
 			-- if debug mode, mark in the position
 			if debug_mode then
-				print("%NMarking v and h for board...")
+				--print("%NMarking v and h for board...")
 				across gamedata.get_generated_ships as ship loop
-					print("%NShip [" + ship.item.row.out + ", " + ship.item.col.out + "]")
-					print(" Size: "+ ship.item.size.out +", Vertical? " + ship.item.dir.out)
+					--print("%NShip [" + ship.item.row.out + ", " + ship.item.col.out + "]")
+					--print(" Size: "+ ship.item.size.out +", Vertical? " + ship.item.dir.out)
 					tempRow := ship.item.row
 					tempCol := ship.item.col
 					across 1 |..| ship.item.size as j loop
@@ -99,6 +94,8 @@ feature	-- get, set game starte variables
 		do Result := gameover end
 
     set_gameover
+    	require
+    		get_started
     	do
     		gameover := True
     		set_not_started
@@ -114,7 +111,11 @@ feature	-- get, set game starte variables
     	do debugMode := True end
 
 	update_stateNum(val: INTEGER)
-		do  numberOfCommand := val end
+		require
+			val >= 0
+		do
+			numberOfCommand := val
+		end
 
 	get_numberOfCommand: INTEGER
 		do Result := numberOfCommand end
@@ -124,15 +125,23 @@ feature	-- get, set game starte variables
 feature {OPERATION} -- command
 	-- At this point, assume all error cases are handled. (in ETF)
 	mark_on_board(coord: COORD)
+		require
+			coord.x > 0 and coord.y > 0
+			not check_invalid_coord(coord)
+			get_started
 		do
 			if check_coord_is_hit(coord) > 0 then
-				implementation.put ('X', coord.x.item, coord.y.item)
+				implementation.put ('X', coord.x, coord.y)
 			else
-				implementation.put ('O', coord.x.item, coord.y.item)
+				implementation.put ('O', coord.x, coord.y)
 			end
 		end
 
 	mark_fire(coord: COORD)
+		require
+			coord.x > 0 and coord.y > 0
+			not check_invalid_coord(coord)
+			get_started
 		local
 			shipSize: INTEGER
 		do
@@ -185,9 +194,16 @@ feature {OPERATION} -- command
 				end
 			end
 
+		ensure
+			check_fire_happened
 		end
 
 	mark_bomb(coord1: COORD; coord2: COORD)
+		require
+			coord1.x > 0 and coord1.y > 0 and coord2.x > 0 and coord2.y > 0
+			not check_invalid_coord(coord1)
+			not check_invalid_coord(coord2)
+			get_started
 		local
 			shipSize1,shipSize2: INTEGER
 		do
@@ -274,16 +290,21 @@ feature {OPERATION} -- command
 				message.set_msg_command (gamedata.msg_keep_fire)
 			end
 
-
+		ensure
+			check_fire_happened
 		end
 
-	
+
 
 feature
 	-- for undo, paste AFTER processed board to current board
 	paste_on_board(imple: ARRAY2[CHARACTER])
+		require
+			not imple.is_empty
 		do
 			implementation.copy (imple)
+		ensure
+			implementation.same_items (imple)
 		end
 
 feature -- query
@@ -293,6 +314,10 @@ feature -- query
 	-- if just hit, return 0.
 	-- Because just hit and sink have different messages (used in ETF_FIRE)
 	check_coord_is_hit(coord: COORD): INTEGER
+		require
+			coord.x > 0 and coord.y > 0
+			not check_invalid_coord(coord)
+			gamedata.get_generated_ships.count > 0
 		local
 			tempRow, tempCol: INTEGER
 			tempCoord: COORD
@@ -319,9 +344,16 @@ feature -- query
 			end
 
 			Result := matchedShipSize
+
+		ensure
+			return_positive: Result >= 0
+
 		end
 
 	check_ship_already_hit(coord: COORD): BOOLEAN
+		require
+			coord.x > 0 and coord.y > 0
+			not check_invalid_coord(coord)
 		do
 			-- this is for 'already fired coord'
 			if implementation[coord.x, coord.y] ~ 'X' or implementation[coord.x, coord.y] ~ 'O' then
@@ -359,8 +391,6 @@ feature -- query
 
 			end
 
-			--print("%NCheck for Full Hit: " + numOfHit.out + " / " + ship.size.out)
-
 			if ship.size ~ numOfHit then		-- Full hit
 				Result := True
 			else
@@ -373,6 +403,10 @@ feature -- query
 	-- mixture of 'check_coord_is_hit' and 'check_ship_sunk'
 	-- ASSUME coord was a hit.
 	check_hit_caused_sink(coord: COORD): BOOLEAN
+		require
+			coord.x > 0 and coord.y > 0
+			not check_invalid_coord(coord)
+			gamedata.get_generated_ships.count > 0
 		local
 			shipSize: INTEGER
 			sunk: BOOLEAN
@@ -391,12 +425,16 @@ feature -- query
 
 	-- if all ships are sunk, win
 	check_win: BOOLEAN
+		require
+			not check_lose
 		do
 			Result := (gamedata.get_current_ships >= gamedata.get_current_ships_limit)
 		end
 
 	-- Assume 'check_win' checked first. So we know all ships are not sunk
 	check_lose: BOOLEAN
+		require
+			not check_win
 		do
 			Result := (gamedata.get_current_fire >= gamedata.get_current_fire_limit and
 						gamedata.get_current_bomb >= gamedata.get_current_bomb_limit)
@@ -417,12 +455,15 @@ feature -- query for error
 
 	-- This is AFTER executing commad. Checking if it was a hit not miss.
 	check_if_it_was_hit(coord: COORD): BOOLEAN
+		require
+			coord.x > 0 and coord.y > 0
+			not check_invalid_coord(coord)
 		do
 			if implementation[coord.x, coord.y] ~ 'X' then
 				Result := True
 			elseif implementation[coord.x, coord.y] ~ 'O' then
 				Result := False
-			else		-- Shouldn't be happening
+			else		-- could be 'v' or 'h' or '_'?
 				Result := False
 			end
 		end
@@ -435,6 +476,9 @@ feature -- query for error
 
 feature -- query for display
 	display_value_on_board(coord: COORD): CHARACTER
+		require
+			coord.x > 0 and coord.y > 0
+			not check_invalid_coord(coord)
 		do
 			Result := implementation[coord.x, coord.y]
 		end
@@ -442,6 +486,8 @@ feature -- query for display
 feature {ETF_MODEL} -- out
 
 	message_out(stateNum: INTEGER): STRING
+		require
+			stateNum >= 0
 		do
 			Result := "  " + message.get_msg_numOfCmd(stateNum) + " " + message.get_msg_error_reference + message.get_msg_error + " -> " + message.get_msg_command
 		end
@@ -462,7 +508,7 @@ feature {ETF_MODEL} -- out
 					Result := Result + h.item.out
 					-- if less than 10, leave 2 spaces. Otherwise, 1 space
 					if h.item < size then
-						if h.item < 10 then
+						if h.item < 9 then
 							Result := Result + "  "
 						else
 							Result := Result + " "
@@ -533,7 +579,11 @@ feature {ETF_MODEL} -- out
 
 						across 1 |..| ship.item.size as j loop
 
-							Result := Result + "[" + gamedata.row_chars[tempRow] + ", " + tempCol.out + "]"
+							Result := Result + "[" + gamedata.row_chars[tempRow] + ","
+							if tempCol < 10 then
+								Result := Result + " "	-- if less than 10, give space
+							end
+							Result := Result + tempCol.out + "]"
 							Result := Result + "->"
 
 							-- Check for Hit
@@ -568,9 +618,5 @@ feature {ETF_MODEL} -- out
 
 		end
 
-    out: STRING
-			-- representation of board
-		do
-			Result := ""
-		end
+
 end

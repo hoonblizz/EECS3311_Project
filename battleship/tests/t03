@@ -1,0 +1,25 @@
+#!/bin/bash
+
+OUTPUTFILE="at03.output.txt"
+OUTPUTLOC="./acceptance/student/at03.output.txt"
+EXELOC="../EIFGENs/battleship/W_code/battleship"
+ACCTEST="./acceptance/student/at03.txt"
+EXPFILE="./acceptance/student/at03.expected.txt"
+
+# compile ecf project (If -finalize is added, code is generated in F_code folder)
+#ec -c_compile -config battleship.ecf
+
+# clear previous file if needed
+if [ -f $OUTPUTLOC ]; then
+  rm $OUTPUTLOC
+fi
+
+# link exe file to another one
+#ln -s ../EIFGENs/battleship/F_code/battleship battleship.exe
+
+# Execute exe file to run acceptance test
+$EXELOC -b $ACCTEST $OUTPUTLOC
+
+# Compare with expected file that professor provided
+#diff at001_output.txt ./acceptance/instructor/at001.expected.txt
+vim -d $OUTPUTLOC $EXPFILE

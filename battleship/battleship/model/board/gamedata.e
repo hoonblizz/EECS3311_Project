@@ -7,7 +7,7 @@ note
 		
 		Ship generation occurs here but actual display will be done by 'implementation' in BOARD
 	]"
-	author: ""
+	author: "Taehoon Kim"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -166,7 +166,6 @@ feature -- update values
 	add_bomb
 		do
 			current_bomb := current_bomb + 1
-			print("%NBOMB count done: " + current_bomb.out)
 		end
 	add_ship
 		do
@@ -248,7 +247,6 @@ feature --query
 
 	get_current_ships_limit: INTEGER
 		do Result := current_ships_limit end
-
 
 	get_level_int(level_str: INTEGER_64): INTEGER
 		do
@@ -407,11 +405,11 @@ feature --command
 	test_ships_generated	-- test random generation of ships
 		do
 			--just to display (testing)
-			across
-				generated_ships as ship
-			loop
-				print("%NShip Size: " + ship.item.size.out + ", Pos: [" + ship.item.row.out + ", " + ship.item.col.out + "], Dir: " + ship.item.dir.out)
-			end
+			--across
+			--	generated_ships as ship
+			--loop
+				--print("%NShip Size: " + ship.item.size.out + ", Pos: [" + ship.item.row.out + ", " + ship.item.col.out + "], Dir: " + ship.item.dir.out)
+			--end
 		end
 
 end

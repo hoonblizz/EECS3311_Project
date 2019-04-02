@@ -66,32 +66,31 @@ feature -- command
 			mode: STRING
 		do
 
-			print("%N===================================")
-			print("%N========== ["+ model.numberOfCommand.out + "] CUSTOM_SETUP_TEST called ")
-			print("%N===================================")
+			--print("%N===================================")
+			--print("%N========== ["+ model.numberOfCommand.out + "] CUSTOM_SETUP_TEST called ")
+			--print("%N===================================")
 
 			boardSize := dimension.as_integer_32
 			num_ship := ships.as_integer_32
 			num_shot := max_shots.as_integer_32
 			num_bomb := num_bombs.as_integer_32
 
+			create op.make		-- History is created in make_board
+
 			if model.board.get_started then
 
-				create op.make		-- History is created in make_board
-				model.board.history.extend_history (op)
-
 				model.board.message.clear_msg_command
-
 				model.board.message.set_msg_error(model.board.gamedata.err_game_already_started)
-
 				keepFire_or_fireAway
+
+				model.board.history.extend_history (op)
 
 				-- set messages for history (undo, redo)
 				op.set_msg_error(model.board.message.get_msg_error)
 				op.set_msg_command(model.board.message.get_msg_command)
 				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
 
-				print("%N HISTORY AFTER - CUSTOM_SETUP_TEST")
+				--print("%N HISTORY AFTER - CUSTOM_SETUP_TEST")
 				model.board.history.display_all	-- just for testing
 
 			elseif check_ships_not_enough(boardSize, num_ship) then
@@ -100,11 +99,25 @@ feature -- command
 				model.board.message.set_msg_error(model.board.gamedata.err_not_enough_ships)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 
+				model.board.history.extend_history (op)
+
+				-- set messages for history (undo, redo)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
+
 			elseif check_ships_too_many(boardSize, num_ship) then
 
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_too_many_ships)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
+
+				model.board.history.extend_history (op)
+
+				-- set messages for history (undo, redo)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
 
 			elseif check_shots_not_enough(boardSize, num_ship, num_shot) then
 
@@ -112,11 +125,25 @@ feature -- command
 				model.board.message.set_msg_error(model.board.gamedata.err_not_enough_shots)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 
+				model.board.history.extend_history (op)
+
+				-- set messages for history (undo, redo)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
+
 			elseif check_shots_too_many(boardSize, num_ship, num_shot) then
 
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_too_many_shots)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
+
+				model.board.history.extend_history (op)
+
+				-- set messages for history (undo, redo)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
 
 			elseif check_bombs_not_enough(boardSize, num_bomb) then
 
@@ -124,11 +151,25 @@ feature -- command
 				model.board.message.set_msg_error(model.board.gamedata.err_not_enough_bombs)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
 
+				model.board.history.extend_history (op)
+
+				-- set messages for history (undo, redo)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
+
 			elseif check_bombs_too_many(boardSize, num_bomb) then
 
 				model.board.message.clear_msg_command
 				model.board.message.set_msg_error(model.board.gamedata.err_too_many_bombs)
 				model.board.message.set_msg_command (model.board.gamedata.msg_start_new)
+
+				model.board.history.extend_history (op)
+
+				-- set messages for history (undo, redo)
+				op.set_msg_error(model.board.message.get_msg_error)
+				op.set_msg_command(model.board.message.get_msg_command)
+				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
 
 			else
 
@@ -160,8 +201,10 @@ feature -- command
 				op.set_msg_command(model.board.message.get_msg_command)
 				op.set_statenum (model.numberofcommand + 1) -- why +1? because its before 'default_update'
 
-				print("%N HISTORY AFTER - CUSTOM_SETUP_TEST")
-				model.board.history.display_all	-- just for testing
+				op.set_implementation		-- copy and paste current changed board
+
+				--print("%N HISTORY AFTER - CUSTOM_SETUP_TEST")
+				--model.board.history.display_all	-- just for testing
 
 
 

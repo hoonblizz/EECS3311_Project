@@ -42,9 +42,9 @@ feature -- command
 			old_board: ARRAY2[CHARACTER]
     	do
 
-    		print("%N===================================")
-			print("%N========== ["+ model.numberOfCommand.out + "] REDO called ")
-			print("%N===================================")
+    		--print("%N===================================")
+			--print("%N========== ["+ model.numberOfCommand.out + "] REDO called ")
+			--print("%N===================================")
 
 			-- forth
 			if
@@ -73,7 +73,7 @@ feature -- command
 				-- If only stack is 'debug_test' or 'new_game', Pretend not exist.
 				if (op_name ~ "debug_test" or op_name ~ "new_game" or op_name ~ "custom_setup" or op_name ~ "custom_setup_test") and model.board.history.after then
 
-					print("%N" + op_name.out + ". Pretend nothing to undo...")
+					--print("%N" + op_name.out + ". Pretend nothing to undo...")
 					msg_nothing_to_redo
 
 				else
@@ -88,10 +88,10 @@ feature -- command
 
 				model.board.paste_on_board(old_board)
 
-				print("%NREDO ["+ model.board.history.item.get_op_name.out +"] messages: " + model.board.history.item.get_stateNum.out + ": " + model.board.history.item.get_msg_error.out + " -> " + model.board.history.item.get_msg_command.out)
+				--print("%NREDO ["+ model.board.history.item.get_op_name.out +"] messages: " + model.board.history.item.get_stateNum.out + ": " + model.board.history.item.get_msg_error.out + " -> " + model.board.history.item.get_msg_command.out)
 
-				print("%N HISTORY AFTER - REDO")
-				model.board.history.display_all	-- just for testing
+				--print("%N HISTORY AFTER - REDO")
+				--model.board.history.display_all	-- just for testing
 
 			else
 

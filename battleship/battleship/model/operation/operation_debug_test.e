@@ -2,7 +2,7 @@ note
 	description: "[
 
 	]"
-	author: ""
+	author: "Taehoon Kim"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -24,15 +24,8 @@ feature {NONE} -- constructor
 			msg_command := board.message.get_msg_command
 			stateNum := board.get_numberofcommand
 
-			create implementation.make (board.gamedata.get_current_board_size, board.gamedata.get_current_board_size)
+			create implementation.make_filled ('_', board.gamedata.get_current_board_size, board.gamedata.get_current_board_size)
 			implementation.copy (board.implementation) 	-- make copy of board
-
-			print("%NDEBUG_TEST OP make: state "+ stateNum.out + " " + msg_error.out + " -> " + msg_command.out)
-
-			print("%NCheck copied OP board...%N")
-			across implementation as el loop
-				print(el.item.out + " ")
-			end
 
 			-- in ETF_FIRE, values are stored once again BEFORE execute
 			old_shots := board.gamedata.get_current_fire
